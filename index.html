@@ -1,0 +1,2630 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Lớp Học VIP 2026 - Môn Công Nghệ</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 260px);
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    .table-scroll::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .table-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 6px;
+    }
+    .table-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 6px;
+    }
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .sticky-col-1 {
+      position: sticky;
+      left: 0;
+      z-index: 15;
+    }
+    .sticky-col-2 {
+      position: sticky;
+      left: 38px;
+      z-index: 15;
+    }
+    @media (max-width: 640px) {
+      .sticky-col-2 {
+        left: 0;
+      }
+    }
+    .sticky-shadow {
+      box-shadow: 4px 0 12px -3px rgba(15, 23, 42, 0.08);
+    }
+    .score-input {
+      transition: all 0.15s ease;
+    }
+    .score-input:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px -2px rgba(79, 70, 229, 0.2);
+    }
+    .zoom-compact {
+      font-size: 12px;
+    }
+    .zoom-large {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body id="appBody" class="min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- Top Navigation & Brand Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/90 sticky top-0 z-30 shadow-2xs">
+    <div class="max-w-[1760px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 truncate">Sổ Quản Lý Lớp Học 2026</h1>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-gradient-to-r from-indigo-50 to-violet-50 text-indigo-700 border border-indigo-200/80 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+              Môn: Công Nghệ
+            </span>
+            <span id="syncStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Đã lưu Local + Sẵn sàng Cloud
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 hidden xl:block truncate">Lưu song song Máy tính & MongoDB Cloud • Chống mất dữ liệu đa tầng • Khóa bảo vệ màn hình</p>
+        </div>
+      </div>
+
+      <!-- Class Switcher Pills in Top Bar -->
+      <div class="flex items-center gap-1.5 overflow-x-auto max-w-full py-1 px-1.5 bg-slate-100/90 rounded-xl border border-slate-200/70">
+        <div id="classListContainer" class="flex items-center gap-1"></div>
+        <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+        <button id="btnOpenAddClass" type="button" class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:bg-white px-2.5 py-1.5 rounded-lg transition shrink-0">
+          + Thêm lớp
+        </button>
+      </div>
+
+      <!-- Top Right Security, Backup & Utility Actions -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button id="btnUndoAction" type="button" title="Hoàn tác thao tác vừa thực hiện (Chống bấm nhầm)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition shadow-2xs disabled:opacity-40">
+          <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+          Hoàn tác (<span id="undoCountBadge">0</span>)
+        </button>
+
+        <button id="btnSaveLessonDual" type="button" title="Lưu dữ liệu tiết dạy trực tiếp xuống ổ cứng máy tính và đồng bộ MongoDB" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+          </svg>
+          Lưu Tiết Dạy (Máy + Cloud)
+        </button>
+
+        <button id="btnOpenDataCenter" type="button" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition">
+          ☁️ MongoDB & Khôi phục
+        </button>
+
+        <button id="btnExportCSV" type="button" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition shadow-2xs">
+          Xuất CSV
+        </button>
+
+        <button id="btnLockScreen" type="button" title="Khóa màn hình khi rời bàn giáo viên (Alt + L)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition">
+          🔒 Khóa màn hình
+        </button>
+
+        <button id="btnResetDemo" type="button" class="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition">
+          Khôi phục mẫu
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Full-Width Content -->
+  <main class="max-w-[1760px] w-full mx-auto px-2.5 sm:px-5 py-3.5 flex-1 flex flex-col gap-3">
+
+    <!-- Top Hero Card: Active Class + KPI Metrics + Primary Actions -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4">
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
+
+        <!-- Left: Active Class Title & Quick Stats -->
+        <div class="flex flex-wrap items-center gap-3 sm:gap-5">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h2 id="currentClassName" class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">Lớp 10A1</h2>
+              <button id="btnRenameClass" type="button" title="Đổi tên lớp" class="text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 p-1.5 rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <button id="btnDeleteClass" type="button" title="Xóa lớp này" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+            <p id="currentClassSub" class="text-xs text-slate-500 mt-0.5">Môn Công Nghệ • Sĩ số: 0 học sinh</p>
+          </div>
+
+          <!-- Compact KPI Pills -->
+          <div class="grid grid-cols-2 sm:flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1.5">
+              <div class="w-7 h-7 rounded-lg bg-slate-200/80 text-slate-700 flex items-center justify-center font-bold text-xs">HS</div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-medium">Sĩ số lớp</div>
+                <div id="statStudents" class="text-sm font-extrabold text-slate-900 leading-tight">0</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 bg-indigo-50/60 border border-indigo-100 rounded-xl px-2.5 py-1.5">
+              <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">ĐD</div>
+              <div>
+                <div class="text-[10px] text-indigo-600 font-medium">Buổi ĐD</div>
+                <div id="statDates" class="text-sm font-extrabold text-indigo-950 leading-tight">0</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 bg-emerald-50/60 border border-emerald-100 rounded-xl px-2.5 py-1.5">
+              <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">%</div>
+              <div>
+                <div class="text-[10px] text-emerald-700 font-medium">Chuyên cần</div>
+                <div id="statAttendanceRate" class="text-sm font-extrabold text-emerald-950 leading-tight">100%</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 bg-amber-50/70 border border-amber-100 rounded-xl px-2.5 py-1.5">
+              <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">TB</div>
+              <div>
+                <div class="text-[10px] text-amber-800 font-medium">TB Môn</div>
+                <div id="statAvgScore" class="text-sm font-extrabold text-amber-950 leading-tight">--</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 bg-violet-50/70 border border-violet-100 rounded-xl px-2.5 py-1.5">
+              <div class="w-7 h-7 rounded-lg bg-violet-100 text-violet-800 flex items-center justify-center font-bold text-xs">🎯</div>
+              <div>
+                <div class="text-[10px] text-violet-700 font-medium">Chưa dò bài</div>
+                <div id="statUncalledCount" class="text-sm font-extrabold text-violet-950 leading-tight">0 HS</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Main Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btnOpenOralQuiz" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition shadow-xs">
+            🎯 Dò bài cũ công bằng
+          </button>
+
+          <button id="btnOpenDailyReport" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition">
+            📊 Báo cáo từng ngày
+          </button>
+
+          <div class="inline-flex items-center rounded-xl bg-indigo-50/80 p-1 border border-indigo-100">
+            <button id="btnToggle3TxColumns" type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-700 hover:bg-white hover:shadow-2xs transition">
+              Mở 3 cột TX
+            </button>
+            <button id="btnAddTxColumn" type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-700 hover:bg-white hover:shadow-2xs transition">
+              + Thêm cột TX
+            </button>
+          </div>
+
+          <button id="btnOpenAddStudent" type="button" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition shadow-2xs">
+            + Thêm học sinh
+          </button>
+
+          <button id="btnOpenAddDate" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 transition shadow-xs">
+            + Thêm ngày điểm danh
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Second Bar: View Mode Tabs + Quick Filter Pills + UI Scale + Search -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs px-3.5 py-2 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200/60">
+          <button type="button" data-view="all" class="view-tab px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs transition">
+            Tất cả (Điểm & Điểm danh)
+          </button>
+          <button type="button" data-view="grades" class="view-tab px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+            3 Cột Điểm Số
+          </button>
+          <button type="button" data-view="attendance" class="view-tab px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+            Bảng Điểm Danh
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1 text-xs">
+          <button type="button" data-filter-chip="all" class="filter-chip px-2.5 py-1 rounded-full font-semibold bg-slate-800 text-white transition">
+            Tất cả
+          </button>
+          <button type="button" data-filter-chip="uncalled" class="filter-chip px-2.5 py-1 rounded-full font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+            Chưa dò bài
+          </button>
+          <button type="button" data-filter-chip="violation" class="filter-chip px-2.5 py-1 rounded-full font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+            Có vi phạm / Điểm trừ
+          </button>
+          <button type="button" data-filter-chip="absent" class="filter-chip px-2.5 py-1 rounded-full font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+            Có buổi vắng
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side: Responsive Scale Switcher & Search -->
+      <div class="flex flex-wrap items-center gap-2 flex-1 sm:flex-initial justify-end">
+        <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/60 text-[11px]">
+          <span class="text-slate-400 px-1.5 font-medium hidden sm:inline">Cỡ bảng:</span>
+          <button type="button" data-scale="compact" class="scale-btn px-2 py-0.5 rounded-lg font-medium text-slate-600 hover:text-slate-900">Thu nhỏ</button>
+          <button type="button" data-scale="normal" class="scale-btn px-2 py-0.5 rounded-lg font-semibold bg-white text-slate-900 shadow-2xs">Chuẩn</button>
+          <button type="button" data-scale="large" class="scale-btn px-2 py-0.5 rounded-lg font-medium text-slate-600 hover:text-slate-900">Phóng to</button>
+        </div>
+
+        <div class="relative w-full sm:w-60">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input id="searchStudentInput" type="text" placeholder="Tìm tên, mã HS, ghi chú lỗi..." class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Attendance Quick Summary Strip -->
+    <div id="dailySummaryStrip" class="bg-white rounded-2xl border border-slate-200/90 shadow-2xs px-3.5 py-2.5 flex items-center gap-2.5 overflow-x-auto">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Main Gradebook & Attendance Table Card -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden flex-1 flex flex-col">
+      <div class="table-scroll overflow-x-auto flex-1">
+        <table id="mainDataTable" class="w-full text-left border-collapse">
+          <thead id="tableHead" class="border-b border-slate-200 text-xs">
+            <!-- Populated by JS -->
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100 text-sm">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="hidden py-14 text-center">
+        <p class="text-slate-600 font-medium text-sm">Không tìm thấy học sinh nào phù hợp với bộ lọc hiện tại.</p>
+        <p class="text-slate-400 text-xs mt-1">Nhấn <strong>"+ Thêm học sinh"</strong> hoặc chọn bộ lọc <strong>"Tất cả"</strong> để xem danh sách.</p>
+      </div>
+
+      <!-- Bottom Quick Helper Footer -->
+      <div class="bg-slate-50/80 border-t border-slate-200/80 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+        <div class="flex flex-wrap items-center gap-3">
+          <span><strong>TBM:</strong> (Tổng TX + Điểm Cộng/Trừ + GK×2 + CK×3) ÷ (Số cột TX + 5)</span>
+          <span>•</span>
+          <span><strong>Dò bài thông minh:</strong> Ưu tiên gọi học sinh có số lần dò thấp nhất.</span>
+        </div>
+        <div id="lastSavedTimeText" class="text-emerald-700 font-semibold">Đã tự động bảo vệ dữ liệu</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating Note Template Dropdown Menu (Danh sách mẫu chọn nhanh) -->
+  <div id="noteDropdownPopover" class="fixed z-50 hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-80 p-3 text-xs">
+    <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+      <span class="font-bold text-slate-900">📋 Danh sách mẫu Note nhanh</span>
+      <button type="button" id="btnCloseNotePopover" class="text-slate-400 hover:text-slate-600 px-1">✕</button>
+    </div>
+    <p class="text-[11px] text-slate-500 mb-2">Nhấn vào mẫu bên dưới để chèn ngay vào ô Note của học sinh:</p>
+    <div id="noteTemplateListContainer" class="max-h-56 overflow-y-auto space-y-1 pr-1">
+      <!-- Populated by JS -->
+    </div>
+    <div class="pt-2.5 mt-2 border-t border-slate-100 flex items-center gap-1.5">
+      <input id="inputNewNoteTemplate" type="text" placeholder="Thêm mẫu ghi chú mới..." class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <button type="button" id="btnAddNewNoteTemplate" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shrink-0">+ Lưu mẫu</button>
+    </div>
+    <div class="pt-2 flex justify-between items-center">
+      <button type="button" id="btnClearStudentNote" class="text-[11px] text-rose-600 hover:underline font-medium">Xóa trắng ô Note này</button>
+      <span class="text-[10px] text-slate-400">Tự động lưu</span>
+    </div>
+  </div>
+
+  <!-- SCREEN LOCK OVERLAY -->
+  <div id="screenLockOverlay" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 select-none">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center">
+      <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3 shadow-inner">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-extrabold text-slate-900">Màn Hình Đang Khóa Bảo Vệ</h3>
+      <p class="text-xs text-slate-500 mt-1">Chế độ bảo vệ sổ điểm giáo viên. Vui lòng nhập mã PIN để mở khóa giao diện.</p>
+      <form id="formUnlockScreen" class="mt-4 space-y-3">
+        <input id="inputUnlockPin" type="password" inputmode="numeric" maxlength="8" placeholder="Nhập mã PIN (Mặc định: 1234)"
+          class="w-full text-center tracking-widest font-extrabold text-lg py-2.5 px-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        <p id="unlockErrorMsg" class="text-xs text-rose-600 font-semibold hidden">Mã PIN chưa đúng! Mặc định là 1234.</p>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-md">
+          🔓 Mở Khóa Giao Diện
+        </button>
+      </form>
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+        <span>Môn Công Nghệ • 2026</span>
+        <button type="button" id="btnToggleChangePin" class="text-indigo-600 hover:underline font-medium">Đổi mã PIN</button>
+      </div>
+      <div id="changePinBox" class="hidden mt-3 pt-3 border-t border-slate-100 text-left space-y-2">
+        <input id="inputCurrentPinForChange" type="password" placeholder="Mã PIN hiện tại (1234)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+        <input id="inputNewPinValue" type="password" placeholder="Mã PIN mới (VD: 2026)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+        <button type="button" id="btnSaveNewPin" class="w-full py-1.5 rounded-lg bg-slate-800 text-white text-xs font-semibold">Lưu mã PIN mới</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DÒ BÀI CŨ THÔNG MINH -->
+  <div id="modalOralQuiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            🎯 Hệ Thống Dò Bài Cũ Công Bằng
+            <span id="oralModalClassBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">Lớp 10A1</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Tự động ưu tiên học sinh chưa được dò bài (hoặc có số lần dò ít nhất) để tránh gọi trùng hoặc bỏ sót cả năm.</p>
+        </div>
+        <button type="button" data-close-modal="modalOralQuiz" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+
+      <div class="overflow-y-auto flex-1 py-4 space-y-4">
+        <div class="bg-gradient-to-br from-indigo-50 via-white to-amber-50 rounded-2xl p-4 border border-indigo-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-indigo-600">Lượt gọi dò bài tiếp theo</div>
+            <div id="oralSelectedStudentName" class="text-xl font-extrabold text-slate-900 mt-1">Nhấn nút quay để chọn HS</div>
+            <div id="oralSelectedStudentMeta" class="text-xs text-slate-500 mt-0.5">Hệ thống chỉ bốc thăm trong nhóm có số lần dò bài thấp nhất</div>
+          </div>
+          <button type="button" id="btnPickFairStudent" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm shadow-md shrink-0 transition">
+            🎲 Gọi ngẫu nhiên (Ưu tiên chưa dò)
+          </button>
+        </div>
+
+        <div id="oralGradingPanel" class="hidden bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800">Chấm điểm & Nhận xét dò bài ngay:</span>
+            <span id="oralSelectedHistoryBadge" class="text-[11px] font-semibold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">Đang có 0 lần dò</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Điểm dò bài (0 - 10)</label>
+              <input id="inputOralScore" type="number" step="0.5" min="0" max="10" placeholder="VD: 8.5" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Ghi điểm vào cột</label>
+              <select id="selectOralTargetCol" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
+                <option value="tx_auto">Cột Thường xuyên trống tiếp theo</option>
+                <option value="bonus">+0.5 vào Điểm Cộng/Trừ</option>
+                <option value="count_only">Chỉ tính lượt dò bài (Không ghi điểm)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nhận xét nhanh</label>
+              <select id="selectOralQuickNote" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                <option value="">-- Không ghi chú thêm --</option>
+                <option value="Thuộc bài cũ tốt">Thuộc bài cũ tốt</option>
+                <option value="Trả lời bài cũ xuất sắc">Trả lời bài cũ xuất sắc</option>
+                <option value="Chưa thuộc bài cũ">Chưa thuộc bài cũ</option>
+                <option value="Chuẩn bị bài sơ sài">Chuẩn bị bài sơ sài</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-1">
+            <button type="button" id="btnConfirmOralCalled" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition">
+              ✅ Xác nhận đã dò bài & Lưu điểm
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="border border-amber-200 bg-amber-50/40 rounded-xl p-3">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-amber-900">⏳ Ưu tiên cần dò (Số lần thấp nhất)</span>
+              <span id="oralPriorityCount" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900">0</span>
+            </div>
+            <div id="oralPriorityList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs"></div>
+          </div>
+
+          <div class="border border-emerald-200 bg-emerald-50/40 rounded-xl p-3">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-emerald-900">✓ Đã dò trong lượt hiện tại</span>
+              <button type="button" id="btnResetOralCounts" class="text-[11px] text-rose-600 hover:underline font-medium">Đặt lại lượt = 0</button>
+            </div>
+            <div id="oralCompletedList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BÁO CÁO ĐIỂM DANH TỪNG NGÀY -->
+  <div id="modalDailyReport" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-5 shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">📊 Báo Cáo Điểm Danh Chi Tiết Từng Ngày</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Thống kê cụ thể mỗi buổi học có bao nhiêu học sinh có mặt, vắng có phép, vắng không phép và đi muộn.</p>
+        </div>
+        <button type="button" data-close-modal="modalDailyReport" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <div id="dailyReportModalBody" class="overflow-y-auto flex-1 py-4 space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ĐỒNG BỘ KÉP (MÁY TÍNH + MONGODB CLOUD) & KHÔI PHỤC DỮ LIỆU -->
+  <div id="modalDataCenter" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-5 shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">🛡️ Trung Tâm An Toàn Dữ Liệu (Máy Tính + MongoDB Cloud)</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Lưu song song 2 nơi (trên máy tính cá nhân & MongoDB) + Khôi phục khi bấm xóa nhầm.</p>
+        </div>
+        <button type="button" data-close-modal="modalDataCenter" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+
+      <div class="overflow-y-auto flex-1 py-4 space-y-5 text-xs">
+        <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="font-bold text-sm text-emerald-950">1. Lưu trực tiếp vào ổ cứng Máy tính (Sau mỗi tiết dạy)</h4>
+              <p class="text-emerald-800 mt-0.5">Tạo file dữ liệu gốc <code>.json</code> lưu thẳng về máy tính. Dù mất mạng hay đổi trình duyệt vẫn khôi phục lại 100% chỉ với 1 cú nhấp.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button type="button" id="btnDownloadJsonBackup" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs">
+                💾 Tải File Sao Lưu (.JSON)
+              </button>
+              <label class="px-3.5 py-2 rounded-xl bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-900 font-bold cursor-pointer shadow-2xs">
+                📂 Mở File Từ Máy Tính
+                <input id="inputRestoreJsonFile" type="file" accept=".json" class="hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h4 class="font-bold text-sm text-indigo-950">2. Đồng bộ song song với MongoDB Cloud (Chia sẻ Public cho bạn bè)</h4>
+              <p class="text-indigo-800 mt-0.5">Nhập URL Backend MongoDB API (Node.js/Express + Mongoose) để tự động đồng bộ mỗi khi bấm Lưu tiết dạy.</p>
+            </div>
+            <span id="mongoConfigStatusText" class="px-2.5 py-1 rounded-full bg-white border border-indigo-200 text-indigo-700 font-semibold">Chế độ Local + File</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">MongoDB API Endpoint URL (Backend Server / Atlas Webhook)</label>
+              <input id="inputMongoEndpoint" type="url" placeholder="VD: https://lop-cong-nghe-api.onrender.com/api/sync" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Mã Sổ Giáo Viên (Room Key)</label>
+              <input id="inputMongoRoomKey" type="text" placeholder="VD: gv_cong_nghe_2026" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <label class="inline-flex items-center gap-2 text-slate-700 font-medium cursor-pointer">
+              <input id="checkboxAutoDownloadPerLesson" type="checkbox" class="rounded text-indigo-600" />
+              Tự động tải file vào máy tính khi nhấn "Lưu Tiết Dạy"
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btnPullFromMongo" class="px-3 py-1.5 rounded-xl bg-white border border-indigo-300 hover:bg-indigo-100 text-indigo-800 font-semibold">
+                ⬇️ Tải dữ liệu từ MongoDB về
+              </button>
+              <button type="button" id="btnSaveMongoConfig" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">
+                ☁️ Lưu cấu hình & Đồng bộ ngay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="border border-slate-200 rounded-2xl p-3.5">
+            <h4 class="font-bold text-slate-900 mb-1">🗑️ Thùng rác (Khôi phục mục vừa xóa nhầm)</h4>
+            <p class="text-[11px] text-slate-500 mb-2">Học sinh, lớp học hoặc ngày điểm danh bị xóa sẽ nằm tại đây để bạn khôi phục lại bất cứ lúc nào.</p>
+            <div id="trashBinContainer" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+          </div>
+
+          <div class="border border-slate-200 rounded-2xl p-3.5">
+            <h4 class="font-bold text-slate-900 mb-1">⏱️ Các mốc sao lưu tự động trên máy</h4>
+            <p class="text-[11px] text-slate-500 mb-2">Hệ thống tự chụp lại các phiên bản trước khi xóa/sửa lớn.</p>
+            <div id="snapshotListContainer" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 hidden bg-slate-900/95 backdrop-blur-xs text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 border border-slate-700">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span id="toastMessage">Đã lưu thay đổi</span>
+  </div>
+
+  <!-- MODAL: Thêm Ngày Điểm Danh -->
+  <div id="modalAddDate" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Thêm Ngày Điểm Danh Mới</h3>
+        <button type="button" data-close-modal="modalAddDate" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <form id="formAddDate" class="space-y-4 pt-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Chọn ngày điểm danh *</label>
+          <input id="inputDateValue" type="date" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Ghi chú buổi học / Tiết học (Tùy chọn)</label>
+          <input id="inputDateLabel" type="text" placeholder="VD: Tiết 3, Thực hành, Bài 4..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Trạng thái mặc định cho cả lớp</label>
+          <select id="inputDateDefaultStatus" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="P">Tất cả Có mặt (✓) - Nhanh nhất</option>
+            <option value="">Để trống (Chưa điểm danh)</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="modalAddDate" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700">Tạo cột điểm danh</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Thêm Lớp Học -->
+  <div id="modalAddClass" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 id="modalClassTitle" class="text-base font-bold text-slate-900">Thêm Lớp Học Mới (Môn Công Nghệ)</h3>
+        <button type="button" data-close-modal="modalAddClass" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <form id="formAddClass" class="space-y-4 pt-4">
+        <input id="inputClassEditMode" type="hidden" value="add" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tên lớp học *</label>
+          <input id="inputClassName" type="text" required placeholder="VD: Lớp 10A3, Lớp 11B2..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="modalAddClass" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700">Lưu lớp học</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Thêm Học Sinh -->
+  <div id="modalAddStudent" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Thêm Học Sinh Vào Lớp</h3>
+        <button type="button" data-close-modal="modalAddStudent" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <form id="formAddStudent" class="space-y-4 pt-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nhập danh sách học sinh (Mỗi dòng 1 học sinh) *</label>
+          <textarea id="inputStudentNames" rows="5" required placeholder="Nguyễn Văn An&#10;Trần Thị Bình&#10;Lê Hoàng Cường" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <p class="text-[11px] text-slate-500 mt-1">Bạn có thể nhập 1 học sinh hoặc dán nhiều học sinh cùng lúc (mỗi tên trên 1 dòng).</p>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="modalAddStudent" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700">Thêm vào lớp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Xác nhận xóa -->
+  <div id="modalConfirm" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-200">
+      <h3 id="confirmTitle" class="text-base font-bold text-slate-900">Xác nhận xóa</h3>
+      <p id="confirmDesc" class="text-xs text-slate-600 mt-2">Bạn có chắc chắn muốn thực hiện thao tác này không?</p>
+      <div class="flex items-center justify-end gap-2 pt-4">
+        <button type="button" data-close-modal="modalConfirm" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">Hủy</button>
+        <button id="btnConfirmYes" type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700">Đồng ý xóa</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'cong_nghe_classroom_manager_v4';
+    const SNAPSHOT_KEY = 'cong_nghe_snapshots_v4';
+
+    const AVATAR_COLORS = [
+      'bg-indigo-100 text-indigo-700',
+      'bg-emerald-100 text-emerald-700',
+      'bg-amber-100 text-amber-800',
+      'bg-rose-100 text-rose-700',
+      'bg-sky-100 text-sky-700',
+      'bg-violet-100 text-violet-700'
+    ];
+
+    const DEFAULT_NOTE_TEMPLATES = [
+      'Quên dụng cụ thực hành',
+      'Mất trật tự trong giờ học',
+      'Chưa làm bài tập về nhà',
+      'Đi học muộn',
+      'Sử dụng điện thoại trong giờ',
+      'Không ghi chép bài',
+      'Phát biểu xây dựng bài tốt (+)',
+      'Hoàn thành tốt bài thực hành (+)'
+    ];
+
+    function createCompactTxColumns() {
+      return [
+        { id: 'tx1', label: 'TX 1' }
+      ];
+    }
+
+    function createInitialData() {
+      return {
+        activeClassId: 'c1',
+        viewMode: 'all',
+        uiScale: 'normal',
+        lockPin: '1234',
+        noteTemplates: [...DEFAULT_NOTE_TEMPLATES],
+        trashBin: [],
+        mongoConfig: {
+          endpoint: '',
+          roomKey: 'gv_cong_nghe_2026',
+          autoDownloadPerLesson: true
+        },
+        classes: [
+          {
+            id: 'c1',
+            name: 'Lớp 10A1',
+            txColumns: createCompactTxColumns(),
+            attendanceDates: [
+              { id: 'd1', date: '2026-10-12', label: 'Tiết 1' },
+              { id: 'd2', date: '2026-10-19', label: 'Tiết 2' },
+              { id: 'd3', date: '2026-10-25', label: 'Thực hành' }
+            ],
+            students: [
+              { id: 's1', code: 'HS01', name: 'Nguyễn Minh An', regularScores: { tx1: 8.5, tx2: 9.0, tx3: 8.0 }, bonusPenalty: 0.5, midterm: 8.0, final: 9.0, attendance: { d1: 'P', d2: 'P', d3: 'P' }, note: 'Phát biểu xây dựng bài tốt (+)', oralCount: 1, lastOralDate: '19/10' },
+              { id: 's2', code: 'HS02', name: 'Trần Ngọc Bích', regularScores: { tx1: 9.0, tx2: 8.5, tx3: null }, bonusPenalty: 0, midterm: 8.5, final: 8.5, attendance: { d1: 'P', d2: 'A_P', d3: 'P' }, note: '', oralCount: 1, lastOralDate: '12/10' },
+              { id: 's3', code: 'HS03', name: 'Lê Hoàng Cường', regularScores: { tx1: 7.0, tx2: 6.5, tx3: 7.5 }, bonusPenalty: -0.5, midterm: 7.5, final: 8.0, attendance: { d1: 'P', d2: 'P', d3: 'L' }, note: 'Quên dụng cụ thực hành', oralCount: 0, lastOralDate: '' },
+              { id: 's4', code: 'HS04', name: 'Phạm Thu Dung', regularScores: { tx1: 8.0, tx2: 8.5, tx3: 9.0 }, bonusPenalty: 1.0, midterm: 9.0, final: 9.5, attendance: { d1: 'P', d2: 'P', d3: 'P' }, note: 'Hoàn thành tốt bài thực hành (+)', oralCount: 0, lastOralDate: '' },
+              { id: 's5', code: 'HS05', name: 'Hoàng Đức Duy', regularScores: { tx1: 6.5, tx2: 7.0, tx3: null }, bonusPenalty: -1.0, midterm: 7.0, final: 7.5, attendance: { d1: 'A_U', d2: 'P', d3: 'P' }, note: 'Mất trật tự trong giờ học', oralCount: 0, lastOralDate: '' },
+              { id: 's6', code: 'HS06', name: 'Vũ Thị Hương Giang', regularScores: { tx1: 9.5, tx2: 9.0, tx3: 9.5 }, bonusPenalty: 0.5, midterm: 9.0, final: 9.0, attendance: { d1: 'P', d2: 'P', d3: 'P' }, note: '', oralCount: 1, lastOralDate: '25/10' }
+            ]
+          },
+          {
+            id: 'c2',
+            name: 'Lớp 10A2',
+            txColumns: createCompactTxColumns(),
+            attendanceDates: [
+              { id: 'd201', date: '2026-10-14', label: 'Tiết 1' },
+              { id: 'd202', date: '2026-10-21', label: 'Tiết 2' }
+            ],
+            students: [
+              { id: 's201', code: 'HS01', name: 'Đặng Quốc Khánh', regularScores: { tx1: 8.0, tx2: 8.5, tx3: null }, bonusPenalty: 0, midterm: 7.5, final: 8.5, attendance: { d201: 'P', d202: 'P' }, note: '', oralCount: 0, lastOralDate: '' },
+              { id: 's202', code: 'HS02', name: 'Bùi Phương Linh', regularScores: { tx1: 9.0, tx2: 9.0, tx3: 9.5 }, bonusPenalty: 0.5, midterm: 9.5, final: 9.0, attendance: { d201: 'P', d202: 'P' }, note: 'Chuẩn bị bài tốt', oralCount: 1, lastOralDate: '21/10' },
+              { id: 's203', code: 'HS03', name: 'Ngô Tuấn Minh', regularScores: { tx1: 7.5, tx2: null, tx3: null }, bonusPenalty: -0.5, midterm: 8.0, final: null, attendance: { d201: 'P', d202: 'A_P' }, note: 'Chưa làm bài tập về nhà', oralCount: 0, lastOralDate: '' },
+              { id: 's204', code: 'HS04', name: 'Đỗ Thảo Nguyên', regularScores: { tx1: 8.5, tx2: 8.0, tx3: null }, bonusPenalty: 0, midterm: 8.5, final: null, attendance: { d201: 'P', d202: 'P' }, note: '', oralCount: 0, lastOralDate: '' }
+            ]
+          },
+          {
+            id: 'c3',
+            name: 'Lớp 11B1',
+            txColumns: createCompactTxColumns(),
+            attendanceDates: [
+              { id: 'd301', date: '2026-10-16', label: 'Lý thuyết' }
+            ],
+            students: [
+              { id: 's301', code: 'HS01', name: 'Lý Gia Bảo', regularScores: { tx1: 8.0, tx2: 8.5, tx3: null }, bonusPenalty: 0, midterm: 8.5, final: null, attendance: { d301: 'P' }, note: '', oralCount: 0, lastOralDate: '' },
+              { id: 's302', code: 'HS02', name: 'Mai Thanh Hà', regularScores: { tx1: 7.5, tx2: null, tx3: null }, bonusPenalty: 0, midterm: 7.0, final: null, attendance: { d301: 'P' }, note: '', oralCount: 0, lastOralDate: '' },
+              { id: 's303', code: 'HS03', name: 'Trương Đình Phong', regularScores: { tx1: 9.0, tx2: 8.5, tx3: null }, bonusPenalty: -0.5, midterm: 8.5, final: null, attendance: { d301: 'L' }, note: 'Đi học muộn', oralCount: 1, lastOralDate: '16/10' }
+            ]
+          }
+        ]
+      };
+    }
+
+    function normalizeState(data) {
+      if (!data || !Array.isArray(data.classes) || data.classes.length === 0) {
+        return createInitialData();
+      }
+      if (!Array.isArray(data.noteTemplates) || data.noteTemplates.length === 0) {
+        data.noteTemplates = [...DEFAULT_NOTE_TEMPLATES];
+      }
+      if (!Array.isArray(data.trashBin)) {
+        data.trashBin = [];
+      }
+      if (!data.lockPin) {
+        data.lockPin = '1234';
+      }
+      if (!data.uiScale) {
+        data.uiScale = 'normal';
+      }
+      if (!data.mongoConfig) {
+        data.mongoConfig = { endpoint: '', roomKey: 'gv_cong_nghe_2026', autoDownloadPerLesson: true };
+      }
+      data.classes.forEach(cls => {
+        if (!Array.isArray(cls.txColumns) || cls.txColumns.length === 0) {
+          cls.txColumns = createCompactTxColumns();
+        }
+        if (!Array.isArray(cls.attendanceDates)) {
+          cls.attendanceDates = [];
+        }
+        if (!Array.isArray(cls.students)) {
+          cls.students = [];
+        }
+        cls.students.forEach(st => {
+          if (!st.regularScores || typeof st.regularScores !== 'object') {
+            st.regularScores = {
+              tx1: st.regular !== undefined ? st.regular : null,
+              tx2: null,
+              tx3: null
+            };
+          }
+          st.bonusPenalty = (st.bonusPenalty !== undefined && st.bonusPenalty !== null && !isNaN(st.bonusPenalty)) ? Number(st.bonusPenalty) : 0;
+          if (typeof st.note !== 'string') st.note = '';
+          st.oralCount = (st.oralCount !== undefined && !isNaN(st.oralCount)) ? Number(st.oralCount) : 0;
+          if (typeof st.lastOralDate !== 'string') st.lastOralDate = '';
+        });
+      });
+      return data;
+    }
+
+    let state = loadState();
+    let undoStack = [];
+    let searchQuery = '';
+    let activeFilterChip = 'all';
+    let pendingConfirmCallback = null;
+    let activeNoteStudentId = null;
+    let selectedOralStudentId = null;
+
+    function loadState() {
+      try {
+        const raw =
+          localStorage.getItem(STORAGE_KEY) ||
+          localStorage.getItem('cong_nghe_classroom_manager_v3') ||
+          localStorage.getItem('cong_nghe_classroom_manager_v1');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return normalizeState(parsed);
+        }
+      } catch (e) {
+        // Fallback to in-memory
+      }
+      return createInitialData();
+    }
+
+    function pushUndoSnapshot(actionLabel) {
+      try {
+        const clone = JSON.parse(JSON.stringify(state));
+        undoStack.push({ label: actionLabel, timestamp: new Date().toLocaleTimeString('vi-VN'), data: clone });
+        if (undoStack.length > 20) undoStack.shift();
+        updateUndoBadge();
+      } catch (e) {}
+    }
+
+    function saveAutomaticSnapshot(reason) {
+      try {
+        const rawList = localStorage.getItem(SNAPSHOT_KEY);
+        const list = rawList ? JSON.parse(rawList) : [];
+        list.unshift({
+          id: 'snap_' + Date.now(),
+          reason,
+          time: new Date().toLocaleString('vi-VN'),
+          state: JSON.parse(JSON.stringify(state))
+        });
+        if (list.length > 8) list.length = 8;
+        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const el = document.getElementById('lastSavedTimeText');
+        if (el) el.textContent = `Đã tự động lưu lúc ${nowStr}`;
+      } catch (e) {}
+      updateUndoBadge();
+    }
+
+    function updateUndoBadge() {
+      const badge = document.getElementById('undoCountBadge');
+      const btn = document.getElementById('btnUndoAction');
+      if (badge) badge.textContent = undoStack.length;
+      if (btn) btn.disabled = undoStack.length === 0;
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      const text = document.getElementById('toastMessage');
+      text.textContent = msg;
+      box.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 2400);
+    }
+
+    function getActiveClass() {
+      return state.classes.find(c => c.id === state.activeClassId) || state.classes[0];
+    }
+
+    function formatShortDate(isoStr) {
+      if (!isoStr) return '';
+      const parts = isoStr.split('-');
+      if (parts.length !== 3) return isoStr;
+      return `${parts[2]}/${parts[1]}`;
+    }
+
+    function formatFullDate(isoStr) {
+      if (!isoStr) return '';
+      const parts = isoStr.split('-');
+      if (parts.length !== 3) return isoStr;
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function getInitials(fullName) {
+      const parts = String(fullName || '').trim().split(/\s+/);
+      if (parts.length === 0) return 'HS';
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    function calcAverage(st, txColumns) {
+      const cols = Array.isArray(txColumns) ? txColumns : [];
+      const validTx = [];
+      cols.forEach(col => {
+        const val = st.regularScores?.[col.id];
+        if (val !== null && val !== undefined && val !== '' && !isNaN(val)) {
+          validTx.push(Number(val));
+        }
+      });
+
+      const gk = st.midterm !== null && st.midterm !== undefined && st.midterm !== '' && !isNaN(st.midterm) ? Number(st.midterm) : null;
+      const ck = st.final !== null && st.final !== undefined && st.final !== '' && !isNaN(st.final) ? Number(st.final) : null;
+      if (validTx.length === 0 || gk === null || ck === null) return null;
+
+      const sumTx = validTx.reduce((a, b) => a + b, 0);
+      const bonus = st.bonusPenalty !== null && st.bonusPenalty !== undefined && !isNaN(st.bonusPenalty) ? Number(st.bonusPenalty) : 0;
+      const rawAvg = (sumTx + bonus + gk * 2 + ck * 3) / (validTx.length + 5);
+      const clamped = Math.max(0, Math.min(10, rawAvg));
+      return clamped.toFixed(1);
+    }
+
+    function countAbsences(st, dates) {
+      let present = 0;
+      let absentP = 0;
+      let absentU = 0;
+      let late = 0;
+      dates.forEach(d => {
+        const val = st.attendance?.[d.id] || '';
+        if (val === 'P') present++;
+        else if (val === 'A_P') absentP++;
+        else if (val === 'A_U') absentU++;
+        else if (val === 'L') late++;
+      });
+      return { present, absentP, absentU, late, totalAbsent: absentP + absentU };
+    }
+
+    function getDateStats(cls, dateObj) {
+      const presentList = [];
+      const absentPList = [];
+      const absentUList = [];
+      const lateList = [];
+      const unrecordedList = [];
+
+      cls.students.forEach(st => {
+        const val = st.attendance?.[dateObj.id] || '';
+        if (val === 'P') presentList.push(st.name);
+        else if (val === 'A_P') absentPList.push(st.name);
+        else if (val === 'A_U') absentUList.push(st.name);
+        else if (val === 'L') lateList.push(st.name);
+        else unrecordedList.push(st.name);
+      });
+
+      return {
+        presentList,
+        absentPList,
+        absentUList,
+        lateList,
+        unrecordedList,
+        totalAbsent: absentPList.length + absentUList.length
+      };
+    }
+
+    function renderClassList() {
+      const container = document.getElementById('classListContainer');
+      container.innerHTML = '';
+      state.classes.forEach(cls => {
+        const isActive = cls.id === state.activeClassId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 ${
+          isActive
+            ? 'bg-indigo-600 text-white shadow-xs'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-white/70'
+        }`;
+        btn.innerHTML = `
+          <span>${escapeHtml(cls.name)}</span>
+          <span class="text-[10px] px-1.5 py-0.2 rounded-full ${
+            isActive ? 'bg-indigo-800/80 text-indigo-100' : 'bg-slate-200/80 text-slate-600'
+          }">${cls.students.length}</span>
+        `;
+        btn.addEventListener('click', () => {
+          state.activeClassId = cls.id;
+          saveState();
+          renderAll();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderStatsAndHeader() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      document.getElementById('currentClassName').textContent = cls.name;
+      document.getElementById('currentClassSub').textContent =
+        `Môn Công Nghệ • ${cls.txColumns.length} cột Thường xuyên • ${cls.attendanceDates.length} buổi điểm danh`;
+
+      const toggleBtn = document.getElementById('btnToggle3TxColumns');
+      if (toggleBtn) {
+        toggleBtn.textContent = cls.txColumns.length >= 3 ? 'Thu gọn 1 cột TX' : 'Mở 3 cột TX';
+      }
+
+      document.getElementById('statStudents').textContent = cls.students.length;
+      document.getElementById('statDates').textContent = cls.attendanceDates.length;
+
+      let totalChecks = 0;
+      let attendedChecks = 0;
+      cls.students.forEach(st => {
+        cls.attendanceDates.forEach(d => {
+          const status = st.attendance?.[d.id];
+          if (status) {
+            totalChecks++;
+            if (status === 'P' || status === 'L') attendedChecks++;
+          }
+        });
+      });
+      const rate = totalChecks > 0 ? Math.round((attendedChecks / totalChecks) * 100) : 100;
+      document.getElementById('statAttendanceRate').textContent = `${rate}%`;
+
+      let sumAvg = 0;
+      let countAvg = 0;
+      cls.students.forEach(st => {
+        const avg = calcAverage(st, cls.txColumns);
+        if (avg !== null) {
+          sumAvg += Number(avg);
+          countAvg++;
+        }
+      });
+      document.getElementById('statAvgScore').textContent =
+        countAvg > 0 ? (sumAvg / countAvg).toFixed(1) : '--';
+
+      const uncalledCount = cls.students.filter(st => Number(st.oralCount || 0) === 0).length;
+      document.getElementById('statUncalledCount').textContent = `${uncalledCount} HS`;
+    }
+
+    function renderDailySummaryStrip() {
+      const cls = getActiveClass();
+      const strip = document.getElementById('dailySummaryStrip');
+      if (!cls || !strip) return;
+
+      if (cls.attendanceDates.length === 0) {
+        strip.innerHTML = `<span class="text-xs text-slate-400">Chưa có ngày điểm danh nào. Nhấn <strong>"+ Thêm ngày điểm danh"</strong> để bắt đầu.</span>`;
+        return;
+      }
+
+      let html = `
+        <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700 shrink-0 pr-2 border-r border-slate-200">
+          <span>📅 Báo cáo nhanh từng ngày:</span>
+        </div>
+      `;
+
+      cls.attendanceDates.forEach(d => {
+        const stats = getDateStats(cls, d);
+        html += `
+          <button type="button" data-open-report-date="${d.id}"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-indigo-50/70 border border-slate-200/90 transition shrink-0 text-left">
+            <div>
+              <div class="text-xs font-extrabold text-slate-800">${escapeHtml(formatFullDate(d.date))} <span class="font-medium text-slate-500">(${escapeHtml(d.label || 'Buổi học')})</span></div>
+              <div class="flex items-center gap-2 text-[11px] mt-0.5">
+                <span class="text-emerald-700 font-semibold">✓ Có mặt: ${stats.presentList.length}</span>
+                <span class="${stats.totalAbsent > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">• Vắng: ${stats.totalAbsent} (${stats.absentPList.length}P, ${stats.absentUList.length}K)</span>
+                ${stats.lateList.length > 0 ? `<span class="text-sky-700 font-semibold">• Muộn: ${stats.lateList.length}</span>` : ''}
+              </div>
+            </div>
+          </button>
+        `;
+      });
+
+      strip.innerHTML = html;
+      strip.querySelectorAll('[data-open-report-date]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          openDailyReportModal();
+        });
+      });
+    }
+
+    function renderViewTabs() {
+      document.querySelectorAll('.view-tab').forEach(btn => {
+        const mode = btn.getAttribute('data-view');
+        if (mode === state.viewMode) {
+          btn.className = 'view-tab px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs transition';
+        } else {
+          btn.className = 'view-tab px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        }
+      });
+
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        const f = chip.getAttribute('data-filter-chip');
+        if (f === activeFilterChip) {
+          chip.className = 'filter-chip px-2.5 py-1 rounded-full font-semibold bg-slate-800 text-white transition';
+        } else {
+          chip.className = 'filter-chip px-2.5 py-1 rounded-full font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+        }
+      });
+
+      document.querySelectorAll('.scale-btn').forEach(btn => {
+        const s = btn.getAttribute('data-scale');
+        if (s === state.uiScale) {
+          btn.className = 'scale-btn px-2 py-0.5 rounded-lg font-semibold bg-white text-slate-900 shadow-2xs';
+        } else {
+          btn.className = 'scale-btn px-2 py-0.5 rounded-lg font-medium text-slate-600 hover:text-slate-900';
+        }
+      });
+
+      const table = document.getElementById('mainDataTable');
+      if (table) {
+        table.classList.remove('zoom-compact', 'zoom-large');
+        if (state.uiScale === 'compact') table.classList.add('zoom-compact');
+        else if (state.uiScale === 'large') table.classList.add('zoom-large');
+      }
+    }
+
+    function renderTable() {
+      const cls = getActiveClass();
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('tableBody');
+      const emptyState = document.getElementById('emptyState');
+
+      if (!cls) return;
+
+      const showGrades = state.viewMode === 'all' || state.viewMode === 'grades';
+      const showAttendance = state.viewMode === 'all' || state.viewMode === 'attendance';
+
+      const gradeColCount = cls.txColumns.length + 5;
+      const attColCount = cls.attendanceDates.length + 2;
+
+      let groupRowHtml = `
+        <tr class="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
+          <th colspan="2" class="sticky-col-1 bg-slate-100 px-3 py-2 text-slate-600 border-r border-slate-200">
+            Thông Tin Học Sinh
+          </th>
+      `;
+
+      if (showGrades) {
+        groupRowHtml += `
+          <th colspan="${gradeColCount}" class="bg-indigo-50/90 text-indigo-900 px-3 py-2 border-r border-slate-200">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span>Bảng Điểm & Lượt Dò Bài Môn Công Nghệ</span>
+              <div class="flex items-center gap-1 normal-case">
+                <button type="button" id="btnQuickExpand3TxHeader" class="px-2 py-0.5 rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800 text-[10px] font-semibold transition">
+                  ${cls.txColumns.length >= 3 ? 'Gọn 1 cột TX' : 'Mở 3 cột TX'}
+                </button>
+                <button type="button" id="btnQuickAddTxHeader" class="px-2 py-0.5 rounded bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-700 text-[10px] font-semibold transition">
+                  + Cột TX
+                </button>
+              </div>
+            </div>
+          </th>
+        `;
+      }
+
+      if (showAttendance) {
+        groupRowHtml += `
+          <th colspan="${attColCount}" class="bg-emerald-50/90 text-emerald-900 px-3 py-2 border-r border-slate-200">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span>Điểm Danh & Sĩ Số Từng Ngày (${cls.attendanceDates.length} buổi)</span>
+              <button type="button" id="btnQuickAddDateHeader" class="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-semibold transition normal-case">
+                + Thêm ngày
+              </button>
+            </div>
+          </th>
+        `;
+      }
+
+      groupRowHtml += `
+          <th colspan="2" class="bg-rose-50/80 text-rose-900 px-3 py-2">
+            Ghi Chú Lỗi Vi Phạm (Chọn Danh Sách Mẫu Hoặc Tự Nhập)
+          </th>
+        </tr>
+      `;
+
+      let colRowHtml = `
+        <tr class="bg-slate-50 text-[11px] font-bold text-slate-600 uppercase">
+          <th class="sticky-col-1 bg-slate-50 px-1.5 py-2.5 text-center w-[38px] border-r border-slate-200">#</th>
+          <th class="sticky-col-2 sticky-shadow bg-slate-50 px-3 py-2.5 min-w-[175px] border-r border-slate-200">Họ và Tên</th>
+      `;
+
+      if (showGrades) {
+        colRowHtml += `
+          <th class="bg-amber-50/50 text-amber-950 px-1.5 py-2 text-center w-[76px] min-w-[76px] border-r border-slate-200">
+            <div>Dò bài</div>
+            <div class="text-[10px] font-normal text-amber-700 normal-case">Số lượt</div>
+          </th>
+        `;
+
+        cls.txColumns.forEach((col, cIdx) => {
+          const canDeleteTx = cls.txColumns.length > 1;
+          colRowHtml += `
+            <th class="bg-indigo-50/40 text-indigo-950 px-1.5 py-2 text-center w-[78px] min-w-[78px] border-r border-slate-200">
+              <div class="flex items-center justify-center gap-0.5">
+                <span>${cls.txColumns.length === 1 ? 'TX' : `TX ${cIdx + 1}`}</span>
+                ${canDeleteTx ? `
+                  <button type="button" data-delete-tx="${col.id}" title="Thu gọn / Xóa cột TX này" class="text-slate-400 hover:text-rose-600 px-0.5 rounded">✕</button>
+                ` : ''}
+              </div>
+              <div class="text-[10px] font-normal text-indigo-600/80 normal-case">HS 1</div>
+            </th>
+          `;
+        });
+
+        colRowHtml += `
+          <th class="bg-violet-50/60 text-violet-950 px-1.5 py-2 text-center w-[106px] min-w-[106px] border-r border-slate-200">
+            <div>Cộng / Trừ</div>
+            <div class="text-[10px] font-normal text-violet-600 normal-case">Điểm +/-</div>
+          </th>
+          <th class="bg-indigo-50/40 text-indigo-950 px-1.5 py-2 text-center w-[78px] min-w-[78px] border-r border-slate-200">
+            <div>Giữa kỳ</div>
+            <div class="text-[10px] font-normal text-indigo-600/80 normal-case">HS 2</div>
+          </th>
+          <th class="bg-indigo-50/40 text-indigo-950 px-1.5 py-2 text-center w-[78px] min-w-[78px] border-r border-slate-200">
+            <div>Cuối kỳ</div>
+            <div class="text-[10px] font-normal text-indigo-600/80 normal-case">HS 3</div>
+          </th>
+          <th class="bg-amber-50/70 text-amber-950 px-1.5 py-2 text-center w-[72px] min-w-[72px] border-r border-slate-200">
+            <div>TBM</div>
+            <div class="text-[10px] font-normal text-amber-700 normal-case">Tổng kết</div>
+          </th>
+        `;
+      }
+
+      if (showAttendance) {
+        cls.attendanceDates.forEach(d => {
+          const stats = getDateStats(cls, d);
+          colRowHtml += `
+            <th class="bg-emerald-50/30 px-1.5 py-1.5 text-center w-[92px] min-w-[92px] border-r border-slate-200 align-top">
+              <div class="flex items-center justify-between px-1">
+                <span class="text-[11px] font-extrabold text-slate-800" title="${escapeHtml(formatFullDate(d.date))}">${escapeHtml(formatShortDate(d.date))}</span>
+                <button type="button" data-delete-date="${d.id}" title="Xóa ngày điểm danh này" class="text-slate-300 hover:text-rose-600 text-[10px]">✕</button>
+              </div>
+              <div class="text-[10px] font-normal text-slate-500 normal-case truncate max-w-[80px] mx-auto">${escapeHtml(d.label || 'Buổi học')}</div>
+              <div class="mt-0.5 text-[9px] font-bold ${stats.totalAbsent > 0 ? 'text-rose-600 bg-rose-50' : 'text-emerald-700 bg-emerald-50'} rounded px-1 py-0.2 normal-case">
+                Vắng: ${stats.totalAbsent} • Đủ: ${stats.presentList.length}
+              </div>
+              <button type="button" data-mark-all-date="${d.id}" title="Đánh dấu tất cả Có mặt" class="mt-1 w-full text-[10px] font-semibold text-emerald-700 bg-emerald-100/70 hover:bg-emerald-200/80 py-0.5 rounded transition normal-case">
+                ✓ Cả lớp
+              </button>
+            </th>
+          `;
+        });
+
+        colRowHtml += `
+          <th class="bg-slate-50 px-1.5 py-2 text-center w-[74px] min-w-[74px] border-r border-slate-200">
+            <div class="text-[10px] font-semibold text-slate-500 normal-case">Thêm lịch</div>
+          </th>
+          <th class="bg-slate-50 px-1.5 py-2 text-center w-[64px] min-w-[64px] border-r border-slate-200">
+            <div>Vắng</div>
+            <div class="text-[10px] font-normal text-slate-400 normal-case">Tổng</div>
+          </th>
+        `;
+      }
+
+      colRowHtml += `
+          <th class="bg-rose-50/30 text-slate-800 px-2.5 py-2 text-left min-w-[250px] border-r border-slate-200">
+            <div class="flex items-center justify-between">
+              <span>Ghi chú / Lỗi vi phạm (Note)</span>
+              <span class="text-[10px] font-normal text-rose-700 normal-case">Chọn từ danh sách mẫu ▾</span>
+            </div>
+          </th>
+          <th class="bg-slate-50 px-1.5 py-2 text-center w-11">Xóa</th>
+        </tr>
+      `;
+
+      thead.innerHTML = groupRowHtml + colRowHtml;
+
+      const q = searchQuery.trim().toLowerCase();
+      const filteredStudents = cls.students.filter(st => {
+        const matchesSearch =
+          st.name.toLowerCase().includes(q) ||
+          (st.code && st.code.toLowerCase().includes(q)) ||
+          (st.note && st.note.toLowerCase().includes(q));
+        if (!matchesSearch) return false;
+
+        if (activeFilterChip === 'uncalled') {
+          return Number(st.oralCount || 0) === 0;
+        }
+        if (activeFilterChip === 'violation') {
+          return (st.note && st.note.trim().length > 0) || Number(st.bonusPenalty || 0) < 0;
+        }
+        if (activeFilterChip === 'absent') {
+          const abs = countAbsences(st, cls.attendanceDates);
+          return abs.totalAbsent > 0 || abs.late > 0;
+        }
+        return true;
+      });
+
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        tbody.innerHTML = filteredStudents.map((st, idx) => {
+          const avg = calcAverage(st, cls.txColumns);
+          const abs = countAbsences(st, cls.attendanceDates);
+          const bp = Number(st.bonusPenalty || 0);
+          const bpFormatted = bp > 0 ? `+${bp}` : `${bp}`;
+          const oralCount = Number(st.oralCount || 0);
+          const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+
+          let rowHtml = `
+            <tr class="hover:bg-indigo-50/25 transition group">
+              <td class="sticky-col-1 bg-white group-hover:bg-slate-50 px-1.5 py-2 text-center text-xs font-semibold text-slate-400 border-r border-slate-100">
+                ${idx + 1}
+              </td>
+              <td class="sticky-col-2 sticky-shadow bg-white group-hover:bg-slate-50 px-2.5 py-2 border-r border-slate-200">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg ${avatarColor} font-bold text-[11px] flex items-center justify-center shrink-0">
+                    ${escapeHtml(getInitials(st.name))}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-semibold text-slate-900 text-xs sm:text-sm truncate">${escapeHtml(st.name)}</div>
+                    <div class="text-[10px] text-slate-400 font-medium">${escapeHtml(st.code || `HS${String(idx + 1).padStart(2, '0')}`)}</div>
+                  </div>
+                </div>
+              </td>
+          `;
+
+          if (showGrades) {
+            rowHtml += `
+              <td class="px-1.5 py-1.5 text-center border-r border-slate-100 bg-amber-50/10">
+                <button type="button" data-oral-quick-btn="${st.id}" title="Nhấn để chấm dò bài cho học sinh này"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold border transition ${
+                    oralCount === 0
+                      ? 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
+                      : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                  }">
+                  <span>${oralCount} lần</span>
+                </button>
+              </td>
+            `;
+
+            cls.txColumns.forEach(col => {
+              const val = st.regularScores?.[col.id];
+              rowHtml += `
+                <td class="px-1 py-1.5 text-center border-r border-slate-100 bg-indigo-50/5">
+                  <input type="number" step="0.1" min="0" max="10" placeholder="-"
+                    data-tx-student="${st.id}" data-tx-col="${col.id}"
+                    value="${val !== null && val !== undefined ? val : ''}"
+                    class="score-input w-14 text-center font-bold text-slate-800 bg-white border border-slate-200 hover:border-indigo-300 rounded-lg py-1 px-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </td>
+              `;
+            });
+
+            rowHtml += `
+              <td class="px-1 py-1.5 text-center border-r border-slate-100 bg-violet-50/10">
+                <div class="inline-flex items-center bg-white border border-slate-200 rounded-lg p-0.5 shadow-2xs">
+                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="-0.5" title="Trừ 0.5 điểm"
+                    class="w-5 h-6 rounded-md hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center transition">
+                    −
+                  </button>
+                  <input type="number" step="0.5" min="-10" max="10"
+                    data-bp-input="${st.id}"
+                    value="${bp}"
+                    title="${bpFormatted} điểm"
+                    class="w-9 text-center font-bold text-xs py-0.5 rounded focus:outline-none ${
+                      bp > 0 ? 'text-emerald-700 bg-emerald-50' : bp < 0 ? 'text-rose-700 bg-rose-50' : 'text-slate-500'
+                    }" />
+                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="0.5" title="Cộng 0.5 điểm"
+                    class="w-5 h-6 rounded-md hover:bg-emerald-100 text-emerald-600 font-bold text-xs flex items-center justify-center transition">
+                    +
+                  </button>
+                </div>
+              </td>
+              <td class="px-1 py-1.5 text-center border-r border-slate-100 bg-indigo-50/5">
+                <input type="number" step="0.1" min="0" max="10" placeholder="-"
+                  data-grade-student="${st.id}" data-grade-field="midterm"
+                  value="${st.midterm !== null && st.midterm !== undefined ? st.midterm : ''}"
+                  class="score-input w-14 text-center font-bold text-slate-800 bg-white border border-slate-200 hover:border-indigo-300 rounded-lg py-1 px-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              </td>
+              <td class="px-1 py-1.5 text-center border-r border-slate-100 bg-indigo-50/5">
+                <input type="number" step="0.1" min="0" max="10" placeholder="-"
+                  data-grade-student="${st.id}" data-grade-field="final"
+                  value="${st.final !== null && st.final !== undefined ? st.final : ''}"
+                  class="score-input w-14 text-center font-bold text-slate-800 bg-white border border-slate-200 hover:border-indigo-300 rounded-lg py-1 px-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              </td>
+              <td class="px-1.5 py-1.5 text-center border-r border-slate-200 bg-amber-50/15">
+                <span id="avg-cell-${st.id}" class="inline-block font-extrabold text-xs sm:text-sm px-2 py-1 rounded-lg ${
+                  avg === null
+                    ? 'text-slate-300'
+                    : Number(avg) >= 8.0
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                    : Number(avg) >= 6.5
+                    ? 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                    : Number(avg) >= 5.0
+                    ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                    : 'bg-rose-100 text-rose-800 border border-rose-200'
+                }">
+                  ${avg !== null ? avg : '--'}
+                </span>
+              </td>
+            `;
+          }
+
+          if (showAttendance) {
+            cls.attendanceDates.forEach(d => {
+              const status = st.attendance?.[d.id] || '';
+              rowHtml += `
+                <td class="px-1 py-1.5 text-center border-r border-slate-100">
+                  ${renderAttendanceButton(st.id, d.id, status)}
+                </td>
+              `;
+            });
+
+            rowHtml += `
+              <td class="px-1 py-1.5 text-center border-r border-slate-100 text-[11px] text-slate-300">
+                •
+              </td>
+              <td class="px-1.5 py-1.5 text-center border-r border-slate-200">
+                <span class="inline-flex items-center justify-center text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                  abs.totalAbsent > 0
+                    ? 'text-rose-700 bg-rose-100 border border-rose-200'
+                    : 'text-slate-400 bg-slate-100'
+                }">
+                  ${abs.totalAbsent}
+                </span>
+              </td>
+            `;
+          }
+
+          const hasNote = st.note && st.note.trim().length > 0;
+          rowHtml += `
+              <td class="px-2 py-1.5 border-r border-slate-100 bg-rose-50/5 min-w-[250px]">
+                <div class="flex items-center gap-1">
+                  <input type="text"
+                    data-note-student="${st.id}"
+                    placeholder="Gõ ghi chú hoặc chọn danh sách mẫu..."
+                    value="${escapeHtml(st.note || '')}"
+                    class="w-full text-xs text-slate-800 rounded-lg py-1.5 px-2.5 border transition focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                      hasNote
+                        ? 'bg-rose-50/70 border-rose-200 text-rose-900 font-medium'
+                        : 'bg-white border-slate-200 hover:border-slate-300'
+                    }" />
+                  <button type="button" data-quick-note-btn="${st.id}" title="Mở danh sách mẫu lỗi vi phạm / nhận xét"
+                    class="shrink-0 px-2 py-1.5 rounded-lg text-[11px] font-semibold text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-0.5">
+                    <span>+Mẫu</span>
+                    <span>▾</span>
+                  </button>
+                </div>
+              </td>
+              <td class="px-1 py-1.5 text-center">
+                <button type="button" data-delete-student="${st.id}" title="Xóa học sinh" class="text-slate-300 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition">
+                  <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          `;
+          return rowHtml;
+        }).join('');
+      }
+
+      attachTableEvents();
+    }
+
+    function renderAttendanceButton(studentId, dateId, status) {
+      let badgeClass = 'bg-slate-100 text-slate-400 border-slate-200 hover:bg-slate-200';
+      let label = '—';
+      let titleText = 'Chưa điểm danh (Nhấn để đổi)';
+
+      if (status === 'P') {
+        badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200';
+        label = '✓ Có mặt';
+        titleText = 'Có mặt';
+      } else if (status === 'A_P') {
+        badgeClass = 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200';
+        label = 'P Có phép';
+        titleText = 'Vắng có phép';
+      } else if (status === 'A_U') {
+        badgeClass = 'bg-rose-100 text-rose-800 border-rose-300 hover:bg-rose-200';
+        label = 'K Ko phép';
+        titleText = 'Vắng không phép';
+      } else if (status === 'L') {
+        badgeClass = 'bg-sky-100 text-sky-800 border-sky-300 hover:bg-sky-200';
+        label = 'M Đi muộn';
+        titleText = 'Đi muộn';
+      }
+
+      return `
+        <button type="button"
+          data-att-student="${studentId}"
+          data-att-date="${dateId}"
+          title="${titleText}"
+          class="w-full py-1 px-1 rounded-lg text-[11px] font-bold border transition select-none ${badgeClass}">
+          ${label}
+        </button>
+      `;
+    }
+
+    function addTxColumnToCurrentClass() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      pushUndoSnapshot('Thêm cột TX');
+      const nextNum = cls.txColumns.length + 1;
+      const newColId = nextNum <= 3 ? `tx${nextNum}` : 'tx_' + Date.now();
+      cls.txColumns.push({ id: newColId, label: `TX ${nextNum}` });
+      cls.students.forEach(st => {
+        if (!st.regularScores) st.regularScores = {};
+        if (st.regularScores[newColId] === undefined) {
+          st.regularScores[newColId] = null;
+        }
+      });
+      saveState();
+      renderAll();
+      showToast(`Đã thêm cột Thường xuyên ${nextNum}`);
+    }
+
+    function toggleThreeTxColumns() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      pushUndoSnapshot('Đổi số cột TX');
+      if (cls.txColumns.length >= 3) {
+        cls.txColumns = [cls.txColumns[0]];
+        showToast('Đã thu gọn về 1 cột Thường xuyên');
+      } else {
+        cls.txColumns = [
+          { id: 'tx1', label: 'TX 1' },
+          { id: 'tx2', label: 'TX 2' },
+          { id: 'tx3', label: 'TX 3' }
+        ];
+        showToast('Đã mở đủ 3 cột Thường xuyên');
+      }
+      saveState();
+      renderAll();
+    }
+
+    function openNoteDropdownPopover(studentId, btnElement) {
+      activeNoteStudentId = studentId;
+      const popover = document.getElementById('noteDropdownPopover');
+      renderNoteTemplateList();
+      popover.classList.remove('hidden');
+
+      const rect = btnElement.getBoundingClientRect();
+      const popWidth = 320;
+      const popHeight = 320;
+      let left = rect.right - popWidth;
+      let top = rect.bottom + 6;
+      if (left < 12) left = 12;
+      if (top + popHeight > window.innerHeight - 12) {
+        top = Math.max(12, rect.top - popHeight - 6);
+      }
+      popover.style.left = `${left}px`;
+      popover.style.top = `${top}px`;
+    }
+
+    function renderNoteTemplateList() {
+      const container = document.getElementById('noteTemplateListContainer');
+      const cls = getActiveClass();
+      const st = cls ? cls.students.find(s => s.id === activeNoteStudentId) : null;
+
+      container.innerHTML = state.noteTemplates.map((tpl, idx) => {
+        const isSelected = st && st.note && st.note.includes(tpl);
+        return `
+          <div class="flex items-center justify-between gap-1 group rounded-lg hover:bg-indigo-50 px-2 py-1.5 transition">
+            <button type="button" data-pick-note-tpl="${escapeHtml(tpl)}" class="flex-1 text-left font-medium ${isSelected ? 'text-indigo-700 font-bold' : 'text-slate-700'}">
+              ${isSelected ? '✓ ' : '• '}${escapeHtml(tpl)}
+            </button>
+            <button type="button" data-remove-note-tpl="${idx}" title="Xóa mẫu này khỏi danh sách" class="text-slate-300 hover:text-rose-600 px-1">✕</button>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('[data-pick-note-tpl]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tpl = btn.getAttribute('data-pick-note-tpl');
+          if (!st) return;
+          pushUndoSnapshot('Ghi chú học sinh');
+          if (!st.note || st.note.trim() === '') {
+            st.note = tpl;
+          } else if (!st.note.includes(tpl)) {
+            st.note = `${st.note}; ${tpl}`;
+          }
+          saveState();
+          renderTable();
+          renderNoteTemplateList();
+          showToast(`Đã chèn mẫu: "${tpl}"`);
+        });
+      });
+
+      container.querySelectorAll('[data-remove-note-tpl]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = Number(btn.getAttribute('data-remove-note-tpl'));
+          state.noteTemplates.splice(idx, 1);
+          saveState();
+          renderNoteTemplateList();
+        });
+      });
+    }
+
+    function attachTableEvents() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      const btnQuickAddDateHeader = document.getElementById('btnQuickAddDateHeader');
+      if (btnQuickAddDateHeader) {
+        btnQuickAddDateHeader.addEventListener('click', openAddDateModal);
+      }
+
+      const btnQuickAddTxHeader = document.getElementById('btnQuickAddTxHeader');
+      if (btnQuickAddTxHeader) {
+        btnQuickAddTxHeader.addEventListener('click', addTxColumnToCurrentClass);
+      }
+
+      const btnQuickExpand3TxHeader = document.getElementById('btnQuickExpand3TxHeader');
+      if (btnQuickExpand3TxHeader) {
+        btnQuickExpand3TxHeader.addEventListener('click', toggleThreeTxColumns);
+      }
+
+      document.querySelectorAll('[data-delete-tx]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (cls.txColumns.length <= 1) {
+            showToast('Cần giữ lại ít nhất 1 cột điểm Thường xuyên');
+            return;
+          }
+          pushUndoSnapshot('Thu gọn cột TX');
+          const colId = btn.getAttribute('data-delete-tx');
+          cls.txColumns = cls.txColumns.filter(c => c.id !== colId);
+          saveState();
+          renderAll();
+          showToast('Đã thu gọn cột điểm Thường xuyên');
+        });
+      });
+
+      document.querySelectorAll('[data-oral-quick-btn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const studentId = btn.getAttribute('data-oral-quick-btn');
+          openOralQuizModal(studentId);
+        });
+      });
+
+      document.querySelectorAll('[data-tx-student]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const studentId = input.getAttribute('data-tx-student');
+          const colId = input.getAttribute('data-tx-col');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+          pushUndoSnapshot('Sửa điểm TX');
+          if (!st.regularScores) st.regularScores = {};
+
+          const raw = e.target.value.trim();
+          if (raw === '') {
+            st.regularScores[colId] = null;
+          } else {
+            let num = parseFloat(raw);
+            if (isNaN(num)) num = null;
+            else num = Math.max(0, Math.min(10, Math.round(num * 10) / 10));
+            st.regularScores[colId] = num;
+            e.target.value = num !== null ? num : '';
+          }
+
+          saveState();
+          renderStatsAndHeader();
+          renderTable();
+          showToast('Đã cập nhật điểm Thường xuyên');
+        });
+      });
+
+      document.querySelectorAll('[data-bp-adjust]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const studentId = btn.getAttribute('data-bp-adjust');
+          const delta = parseFloat(btn.getAttribute('data-bp-delta') || '0');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+
+          pushUndoSnapshot('Cộng/Trừ điểm');
+          const current = Number(st.bonusPenalty || 0);
+          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round((current + delta) * 10) / 10));
+          saveState();
+          renderStatsAndHeader();
+          renderTable();
+          showToast(delta > 0 ? 'Đã cộng 0.5 điểm' : 'Đã trừ 0.5 điểm');
+        });
+      });
+
+      document.querySelectorAll('[data-bp-input]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const studentId = input.getAttribute('data-bp-input');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+
+          pushUndoSnapshot('Nhập điểm Cộng/Trừ');
+          const raw = e.target.value.trim();
+          let num = raw === '' ? 0 : parseFloat(raw);
+          if (isNaN(num)) num = 0;
+          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round(num * 10) / 10));
+
+          saveState();
+          renderStatsAndHeader();
+          renderTable();
+          showToast('Đã lưu điểm Cộng / Trừ');
+        });
+      });
+
+      document.querySelectorAll('[data-grade-student]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const studentId = input.getAttribute('data-grade-student');
+          const field = input.getAttribute('data-grade-field');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+
+          pushUndoSnapshot('Sửa điểm GK/CK');
+          const raw = e.target.value.trim();
+          if (raw === '') {
+            st[field] = null;
+          } else {
+            let num = parseFloat(raw);
+            if (isNaN(num)) num = null;
+            else num = Math.max(0, Math.min(10, Math.round(num * 10) / 10));
+            st[field] = num;
+            e.target.value = num !== null ? num : '';
+          }
+
+          saveState();
+          renderStatsAndHeader();
+          renderTable();
+          showToast('Đã cập nhật điểm số');
+        });
+      });
+
+      document.querySelectorAll('[data-note-student]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const studentId = input.getAttribute('data-note-student');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+          pushUndoSnapshot('Sửa Note học sinh');
+          st.note = e.target.value.trim();
+          saveState();
+          renderTable();
+          showToast('Đã lưu ghi chú học sinh');
+        });
+      });
+
+      document.querySelectorAll('[data-quick-note-btn]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const studentId = btn.getAttribute('data-quick-note-btn');
+          openNoteDropdownPopover(studentId, btn);
+        });
+      });
+
+      const cycleOrder = ['P', 'A_P', 'A_U', 'L', ''];
+      document.querySelectorAll('[data-att-student]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const studentId = btn.getAttribute('data-att-student');
+          const dateId = btn.getAttribute('data-att-date');
+          const st = cls.students.find(s => s.id === studentId);
+          if (!st) return;
+          pushUndoSnapshot('Điểm danh');
+          if (!st.attendance) st.attendance = {};
+
+          const current = st.attendance[dateId] || '';
+          const nextIdx = (cycleOrder.indexOf(current) + 1) % cycleOrder.length;
+          st.attendance[dateId] = cycleOrder[nextIdx];
+
+          saveState();
+          renderAll();
+        });
+      });
+
+      document.querySelectorAll('[data-mark-all-date]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pushUndoSnapshot('Điểm danh cả lớp');
+          const dateId = btn.getAttribute('data-mark-all-date');
+          cls.students.forEach(st => {
+            if (!st.attendance) st.attendance = {};
+            st.attendance[dateId] = 'P';
+          });
+          saveState();
+          renderAll();
+          showToast('Đã đánh dấu tất cả Có mặt');
+        });
+      });
+
+      document.querySelectorAll('[data-delete-date]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dateId = btn.getAttribute('data-delete-date');
+          const dObj = cls.attendanceDates.find(d => d.id === dateId);
+          openConfirmModal(
+            'Xóa cột ngày điểm danh?',
+            `Bạn có chắc muốn xóa ngày điểm danh ${dObj ? formatFullDate(dObj.date) : ''} khỏi ${cls.name}? (Có thể hoàn tác nếu xóa nhầm)`,
+            () => {
+              pushUndoSnapshot('Xóa ngày điểm danh');
+              saveAutomaticSnapshot(`Trước khi xóa ngày ${dObj ? formatFullDate(dObj.date) : ''}`);
+              cls.attendanceDates = cls.attendanceDates.filter(d => d.id !== dateId);
+              saveState();
+              renderAll();
+              showToast('Đã xóa ngày điểm danh (Có thể nhấn Hoàn tác)');
+            }
+          );
+        });
+      });
+
+      document.querySelectorAll('[data-delete-student]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const studentId = btn.getAttribute('data-delete-student');
+          const st = cls.students.find(s => s.id === studentId);
+          openConfirmModal(
+            'Xóa học sinh?',
+            `Học sinh "${st ? st.name : ''}" sẽ được chuyển vào Thùng rác để bạn có thể khôi phục bất cứ lúc nào nếu bấm nhầm.`,
+            () => {
+              pushUndoSnapshot(`Xóa HS ${st ? st.name : ''}`);
+              saveAutomaticSnapshot(`Trước khi xóa HS ${st ? st.name : ''}`);
+              if (st) {
+                state.trashBin.unshift({
+                  trashId: 'tr_' + Date.now(),
+                  type: 'student',
+                  classId: cls.id,
+                  className: cls.name,
+                  deletedAt: new Date().toLocaleString('vi-VN'),
+                  payload: JSON.parse(JSON.stringify(st))
+                });
+              }
+              cls.students = cls.students.filter(s => s.id !== studentId);
+              saveState();
+              renderAll();
+              showToast('Đã chuyển học sinh vào Thùng rác (Nhấn Hoàn tác để lấy lại ngay)');
+            }
+          );
+        });
+      });
+    }
+
+    function openOralQuizModal(preselectStudentId) {
+      const cls = getActiveClass();
+      if (!cls) return;
+      document.getElementById('oralModalClassBadge').textContent = cls.name;
+      document.getElementById('modalOralQuiz').classList.remove('hidden');
+
+      if (preselectStudentId) {
+        selectStudentForOralQuiz(preselectStudentId);
+      } else {
+        selectedOralStudentId = null;
+        document.getElementById('oralGradingPanel').classList.add('hidden');
+        document.getElementById('oralSelectedStudentName').textContent = 'Nhấn nút quay để chọn HS';
+        document.getElementById('oralSelectedStudentMeta').textContent = 'Hệ thống chỉ bốc thăm trong nhóm có số lần dò bài thấp nhất';
+      }
+      renderOralQuizLists();
+    }
+
+    function selectStudentForOralQuiz(studentId) {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const st = cls.students.find(s => s.id === studentId);
+      if (!st) return;
+
+      selectedOralStudentId = st.id;
+      document.getElementById('oralSelectedStudentName').textContent = `${st.name} (${st.code || ''})`;
+      document.getElementById('oralSelectedStudentMeta').textContent = `Số lần đã dò: ${st.oralCount || 0} lần ${st.lastOralDate ? `• Lần cuối: ${st.lastOralDate}` : '• Chưa dò lần nào'}`;
+      document.getElementById('oralSelectedHistoryBadge').textContent = `Đang có ${st.oralCount || 0} lần dò`;
+      document.getElementById('inputOralScore').value = '';
+      document.getElementById('selectOralQuickNote').value = '';
+      document.getElementById('oralGradingPanel').classList.remove('hidden');
+      renderOralQuizLists();
+    }
+
+    function renderOralQuizLists() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      const minCount = cls.students.length > 0
+        ? Math.min(...cls.students.map(s => Number(s.oralCount || 0)))
+        : 0;
+
+      const priorityStudents = cls.students.filter(s => Number(s.oralCount || 0) === minCount);
+      const completedStudents = cls.students.filter(s => Number(s.oralCount || 0) > minCount);
+
+      document.getElementById('oralPriorityCount').textContent = `${priorityStudents.length} HS (${minCount} lần)`;
+
+      const pContainer = document.getElementById('oralPriorityList');
+      pContainer.innerHTML = priorityStudents.map(st => `
+        <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded-lg border ${selectedOralStudentId === st.id ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-amber-200/80'}">
+          <div>
+            <span class="font-bold text-slate-800">${escapeHtml(st.name)}</span>
+            <span class="text-[10px] text-slate-400 ml-1">(${st.oralCount || 0} lần)</span>
+          </div>
+          <button type="button" data-select-oral-st="${st.id}" class="px-2 py-0.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold text-[11px]">
+            Gọi tên
+          </button>
+        </div>
+      `).join('');
+
+      const cContainer = document.getElementById('oralCompletedList');
+      if (completedStudents.length === 0) {
+        cContainer.innerHTML = `<p class="text-slate-400 text-[11px] py-2">Tất cả học sinh đang ở cùng mức lượt dò (${minCount} lần).</p>`;
+      } else {
+        cContainer.innerHTML = completedStudents.map(st => `
+          <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200/80">
+            <div>
+              <span class="font-semibold text-slate-800">${escapeHtml(st.name)}</span>
+              <span class="text-[10px] text-emerald-700 font-bold ml-1">✓ Đã dò ${st.oralCount} lần</span>
+            </div>
+            <button type="button" data-select-oral-st="${st.id}" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px]">
+              Gọi lại
+            </button>
+          </div>
+        `).join('');
+      }
+
+      document.querySelectorAll('[data-select-oral-st]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectStudentForOralQuiz(btn.getAttribute('data-select-oral-st'));
+        });
+      });
+    }
+
+    function openDailyReportModal() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const body = document.getElementById('dailyReportModalBody');
+
+      if (cls.attendanceDates.length === 0) {
+        body.innerHTML = `<p class="text-center text-slate-500 py-8">Chưa có ngày điểm danh nào trong lớp này.</p>`;
+      } else {
+        body.innerHTML = cls.attendanceDates.map(d => {
+          const stats = getDateStats(cls, d);
+          const total = cls.students.length;
+          const rate = total > 0 ? Math.round(((stats.presentList.length + stats.lateList.length) / total) * 100) : 100;
+          return `
+            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/60 space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                <div>
+                  <span class="text-sm font-extrabold text-slate-900">📅 Ngày ${escapeHtml(formatFullDate(d.date))}</span>
+                  <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700">${escapeHtml(d.label || 'Buổi học')}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-bold">
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Có mặt: ${stats.presentList.length}/${total} (${rate}%)</span>
+                  <span class="px-2.5 py-0.5 rounded-full ${stats.totalAbsent > 0 ? 'bg-rose-100 text-rose-800' : 'bg-slate-200 text-slate-600'}">Vắng: ${stats.totalAbsent}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800">Muộn: ${stats.lateList.length}</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div class="bg-white p-2.5 rounded-xl border border-rose-200/70">
+                  <div class="font-bold text-rose-700 mb-1">Vắng không phép (${stats.absentUList.length}):</div>
+                  <div class="text-slate-700">${stats.absentUList.length > 0 ? stats.absentUList.map(escapeHtml).join(', ') : '<span class="text-slate-400">Không có</span>'}</div>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-amber-200/70">
+                  <div class="font-bold text-amber-800 mb-1">Vắng có phép (${stats.absentPList.length}):</div>
+                  <div class="text-slate-700">${stats.absentPList.length > 0 ? stats.absentPList.map(escapeHtml).join(', ') : '<span class="text-slate-400">Không có</span>'}</div>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-sky-200/70">
+                  <div class="font-bold text-sky-800 mb-1">Đi học muộn (${stats.lateList.length}):</div>
+                  <div class="text-slate-700">${stats.lateList.length > 0 ? stats.lateList.map(escapeHtml).join(', ') : '<span class="text-slate-400">Không có</span>'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('modalDailyReport').classList.remove('hidden');
+    }
+
+    function openDataCenterModal() {
+      document.getElementById('inputMongoEndpoint').value = state.mongoConfig?.endpoint || '';
+      document.getElementById('inputMongoRoomKey').value = state.mongoConfig?.roomKey || 'gv_cong_nghe_2026';
+      document.getElementById('checkboxAutoDownloadPerLesson').checked = state.mongoConfig?.autoDownloadPerLesson !== false;
+      renderTrashAndSnapshots();
+      document.getElementById('modalDataCenter').classList.remove('hidden');
+    }
+
+    function renderTrashAndSnapshots() {
+      const trashEl = document.getElementById('trashBinContainer');
+      if (!state.trashBin || state.trashBin.length === 0) {
+        trashEl.innerHTML = `<p class="text-slate-400 text-[11px] py-2">Thùng rác trống.</p>`;
+      } else {
+        trashEl.innerHTML = state.trashBin.map(item => `
+          <div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200">
+            <div class="truncate pr-2">
+              <span class="font-bold text-slate-800">${escapeHtml(item.payload.name)}</span>
+              <span class="text-[10px] text-slate-400 block">${escapeHtml(item.className || '')} • ${escapeHtml(item.deletedAt)}</span>
+            </div>
+            <button type="button" data-restore-trash="${item.trashId}" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[10px] shrink-0">
+              Khôi phục
+            </button>
+          </div>
+        `).join('');
+
+        trashEl.querySelectorAll('[data-restore-trash]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const trashId = btn.getAttribute('data-restore-trash');
+            const idx = state.trashBin.findIndex(t => t.trashId === trashId);
+            if (idx === -1) return;
+            const item = state.trashBin[idx];
+            if (item.type === 'student') {
+              const targetCls = state.classes.find(c => c.id === item.classId) || getActiveClass();
+              if (targetCls) {
+                targetCls.students.push(item.payload);
+              }
+            } else if (item.type === 'class') {
+              state.classes.push(item.payload);
+            }
+            state.trashBin.splice(idx, 1);
+            saveState();
+            renderAll();
+            renderTrashAndSnapshots();
+            showToast('Đã khôi phục dữ liệu từ Thùng rác!');
+          });
+        });
+      }
+
+      const snapEl = document.getElementById('snapshotListContainer');
+      let snaps = [];
+      try {
+        snaps = JSON.parse(localStorage.getItem(SNAPSHOT_KEY) || '[]');
+      } catch (e) {}
+
+      if (snaps.length === 0) {
+        snapEl.innerHTML = `<p class="text-slate-400 text-[11px] py-2">Chưa có mốc sao lưu tự động nào.</p>`;
+      } else {
+        snapEl.innerHTML = snaps.map(s => `
+          <div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200">
+            <div class="truncate pr-2">
+              <span class="font-bold text-slate-800">${escapeHtml(s.reason)}</span>
+              <span class="text-[10px] text-slate-400 block">${escapeHtml(s.time)}</span>
+            </div>
+            <button type="button" data-restore-snap="${s.id}" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-[10px] shrink-0">
+              Khôi phục mốc này
+            </button>
+          </div>
+        `).join('');
+
+        snapEl.querySelectorAll('[data-restore-snap]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const snapId = btn.getAttribute('data-restore-snap');
+            const found = snaps.find(x => x.id === snapId);
+            if (!found) return;
+            pushUndoSnapshot('Khôi phục mốc sao lưu');
+            state = normalizeState(found.state);
+            saveState();
+            renderAll();
+            showToast('Đã khôi phục về mốc sao lưu đã chọn!');
+          });
+        });
+      }
+    }
+
+    function downloadJsonFileToPC() {
+      const cls = getActiveClass();
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const fileName = `So_Quan_Ly_Cong_Nghe_${cls ? cls.name.replace(/\s+/g, '_') : 'All'}_${dateStr}.json`;
+      const payload = JSON.stringify(state, null, 2);
+      const blob = new Blob([payload], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    async function syncWithMongoDB(showNotification = true) {
+      const endpoint = (state.mongoConfig?.endpoint || '').trim();
+      const roomKey = (state.mongoConfig?.roomKey || 'gv_cong_nghe_2026').trim();
+      const badge = document.getElementById('syncStatusBadge');
+
+      if (!endpoint) {
+        if (badge) {
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Đã lưu Máy tính (Local JSON)`;
+        }
+        return false;
+      }
+
+      try {
+        if (badge) {
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> Đang đồng bộ MongoDB...`;
+        }
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roomKey, updatedAt: new Date().toISOString(), state })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (badge) {
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Đã lưu Máy tính + MongoDB Cloud`;
+        }
+        if (showNotification) showToast('Đã lưu song song vào Máy tính & MongoDB Cloud!');
+        return true;
+      } catch (err) {
+        if (badge) {
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Đã lưu Máy tính (Chờ kết nối MongoDB)`;
+        }
+        if (showNotification) showToast('Đã lưu an toàn vào Máy tính (MongoDB API đang ngoại tuyến)');
+        return false;
+      }
+    }
+
+    function openAddDateModal() {
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('inputDateValue').value = today;
+      document.getElementById('inputDateLabel').value = '';
+      document.getElementById('inputDateDefaultStatus').value = 'P';
+      document.getElementById('modalAddDate').classList.remove('hidden');
+    }
+
+    function openConfirmModal(title, desc, onYes) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmDesc').textContent = desc;
+      pendingConfirmCallback = onYes;
+      document.getElementById('modalConfirm').classList.remove('hidden');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderAll() {
+      renderClassList();
+      renderStatsAndHeader();
+      renderDailySummaryStrip();
+      renderViewTabs();
+      renderTable();
+      updateUndoBadge();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAll();
+
+      document.addEventListener('click', (e) => {
+        const pop = document.getElementById('noteDropdownPopover');
+        if (!pop.classList.contains('hidden') && !pop.contains(e.target)) {
+          pop.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('btnCloseNotePopover').addEventListener('click', () => {
+        document.getElementById('noteDropdownPopover').classList.add('hidden');
+      });
+
+      document.getElementById('btnAddNewNoteTemplate').addEventListener('click', () => {
+        const input = document.getElementById('inputNewNoteTemplate');
+        const val = input.value.trim();
+        if (!val) return;
+        if (!state.noteTemplates.includes(val)) {
+          state.noteTemplates.unshift(val);
+          saveState();
+        }
+        input.value = '';
+        renderNoteTemplateList();
+        showToast('Đã thêm mẫu mới vào danh sách');
+      });
+
+      document.getElementById('btnClearStudentNote').addEventListener('click', () => {
+        const cls = getActiveClass();
+        const st = cls ? cls.students.find(s => s.id === activeNoteStudentId) : null;
+        if (!st) return;
+        pushUndoSnapshot('Xóa nội dung Note');
+        st.note = '';
+        saveState();
+        renderTable();
+        document.getElementById('noteDropdownPopover').classList.add('hidden');
+        showToast('Đã xóa trắng ghi chú của học sinh');
+      });
+
+      document.getElementById('btnUndoAction').addEventListener('click', () => {
+        if (undoStack.length === 0) return;
+        const last = undoStack.pop();
+        state = normalizeState(last.data);
+        saveState();
+        renderAll();
+        showToast(`Đã hoàn tác: ${last.label}`);
+      });
+
+      document.getElementById('btnSaveLessonDual').addEventListener('click', async () => {
+        saveAutomaticSnapshot('Lưu tiết dạy');
+        saveState();
+        if (state.mongoConfig?.autoDownloadPerLesson !== false) {
+          downloadJsonFileToPC();
+        }
+        await syncWithMongoDB(true);
+      });
+
+      document.getElementById('btnOpenDataCenter').addEventListener('click', openDataCenterModal);
+
+      document.getElementById('btnDownloadJsonBackup').addEventListener('click', () => {
+        downloadJsonFileToPC();
+        showToast('Đã tải file sao lưu .JSON về máy tính');
+      });
+
+      document.getElementById('inputRestoreJsonFile').addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            pushUndoSnapshot('Nhập file từ máy tính');
+            state = normalizeState(parsed);
+            saveState();
+            renderAll();
+            document.getElementById('modalDataCenter').classList.add('hidden');
+            showToast('Đã khôi phục 100% dữ liệu từ file máy tính!');
+          } catch (err) {
+            showToast('File không hợp lệ, vui lòng chọn đúng file .JSON');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('btnSaveMongoConfig').addEventListener('click', async () => {
+        state.mongoConfig = {
+          endpoint: document.getElementById('inputMongoEndpoint').value.trim(),
+          roomKey: document.getElementById('inputMongoRoomKey').value.trim() || 'gv_cong_nghe_2026',
+          autoDownloadPerLesson: document.getElementById('checkboxAutoDownloadPerLesson').checked
+        };
+        saveState();
+        await syncWithMongoDB(true);
+      });
+
+      document.getElementById('btnPullFromMongo').addEventListener('click', async () => {
+        const endpoint = document.getElementById('inputMongoEndpoint').value.trim();
+        const roomKey = document.getElementById('inputMongoRoomKey').value.trim() || 'gv_cong_nghe_2026';
+        if (!endpoint) {
+          showToast('Vui lòng nhập MongoDB API Endpoint URL trước');
+          return;
+        }
+        try {
+          const url = `${endpoint}?roomKey=${encodeURIComponent(roomKey)}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (data && data.state) {
+            pushUndoSnapshot('Tải dữ liệu từ MongoDB');
+            state = normalizeState(data.state);
+            saveState();
+            renderAll();
+            showToast('Đã đồng bộ dữ liệu mới nhất từ MongoDB về máy!');
+          }
+        } catch (err) {
+          showToast('Không thể kết nối tới MongoDB API Endpoint');
+        }
+      });
+
+      document.getElementById('btnLockScreen').addEventListener('click', () => {
+        document.getElementById('inputUnlockPin').value = '';
+        document.getElementById('unlockErrorMsg').classList.add('hidden');
+        document.getElementById('screenLockOverlay').classList.remove('hidden');
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.altKey && (e.key === 'l' || e.key === 'L')) {
+          e.preventDefault();
+          document.getElementById('inputUnlockPin').value = '';
+          document.getElementById('screenLockOverlay').classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('formUnlockScreen').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const entered = document.getElementById('inputUnlockPin').value.trim();
+        if (entered === String(state.lockPin || '1234')) {
+          document.getElementById('screenLockOverlay').classList.add('hidden');
+          showToast('Đã mở khóa màn hình');
+        } else {
+          document.getElementById('unlockErrorMsg').classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('btnToggleChangePin').addEventListener('click', () => {
+        document.getElementById('changePinBox').classList.toggle('hidden');
+      });
+
+      document.getElementById('btnSaveNewPin').addEventListener('click', () => {
+        const cur = document.getElementById('inputCurrentPinForChange').value.trim();
+        const nw = document.getElementById('inputNewPinValue').value.trim();
+        if (cur !== String(state.lockPin || '1234')) {
+          showToast('Mã PIN hiện tại không đúng!');
+          return;
+        }
+        if (nw.length < 4) {
+          showToast('Mã PIN mới cần ít nhất 4 ký tự');
+          return;
+        }
+        state.lockPin = nw;
+        saveState();
+        document.getElementById('changePinBox').classList.add('hidden');
+        showToast('Đã đổi mã PIN khóa màn hình thành công!');
+      });
+
+      document.getElementById('btnOpenOralQuiz').addEventListener('click', () => openOralQuizModal(null));
+
+      document.getElementById('btnPickFairStudent').addEventListener('click', () => {
+        const cls = getActiveClass();
+        if (!cls || cls.students.length === 0) return;
+
+        const minCount = Math.min(...cls.students.map(s => Number(s.oralCount || 0)));
+        const candidates = cls.students.filter(s => Number(s.oralCount || 0) === minCount);
+        const picked = candidates[Math.floor(Math.random() * candidates.length)];
+        if (picked) {
+          selectStudentForOralQuiz(picked.id);
+          showToast(`🎯 Đã chọn ngẫu nhiên: ${picked.name}`);
+        }
+      });
+
+      document.getElementById('btnConfirmOralCalled').addEventListener('click', () => {
+        const cls = getActiveClass();
+        if (!cls || !selectedOralStudentId) return;
+        const st = cls.students.find(s => s.id === selectedOralStudentId);
+        if (!st) return;
+
+        pushUndoSnapshot(`Dò bài ${st.name}`);
+        st.oralCount = Number(st.oralCount || 0) + 1;
+        const todayShort = formatShortDate(new Date().toISOString().slice(0, 10));
+        st.lastOralDate = todayShort;
+
+        const scoreRaw = document.getElementById('inputOralScore').value.trim();
+        const targetCol = document.getElementById('selectOralTargetCol').value;
+        const quickNote = document.getElementById('selectOralQuickNote').value;
+
+        if (scoreRaw !== '' && !isNaN(parseFloat(scoreRaw))) {
+          const scoreNum = Math.max(0, Math.min(10, Math.round(parseFloat(scoreRaw) * 10) / 10));
+          if (targetCol === 'tx_auto') {
+            if (!st.regularScores) st.regularScores = {};
+            const emptyCol = cls.txColumns.find(c => st.regularScores[c.id] === null || st.regularScores[c.id] === undefined);
+            const targetId = emptyCol ? emptyCol.id : cls.txColumns[0].id;
+            st.regularScores[targetId] = scoreNum;
+          } else if (targetCol === 'bonus') {
+            st.bonusPenalty = Math.max(-10, Math.min(10, Number(st.bonusPenalty || 0) + 0.5));
+          }
+        } else if (targetCol === 'bonus') {
+          st.bonusPenalty = Math.max(-10, Math.min(10, Number(st.bonusPenalty || 0) + 0.5));
+        }
+
+        if (quickNote) {
+          st.note = st.note ? `${st.note}; ${quickNote} (${todayShort})` : `${quickNote} (${todayShort})`;
+        }
+
+        saveState();
+        renderAll();
+        selectStudentForOralQuiz(st.id);
+        showToast(`Đã lưu lượt dò bài của ${st.name}`);
+      });
+
+      document.getElementById('btnResetOralCounts').addEventListener('click', () => {
+        const cls = getActiveClass();
+        if (!cls) return;
+        pushUndoSnapshot('Đặt lại lượt dò bài');
+        cls.students.forEach(st => {
+          st.oralCount = 0;
+          st.lastOralDate = '';
+        });
+        saveState();
+        renderAll();
+        renderOralQuizLists();
+        showToast('Đã đặt lại lượt dò bài của cả lớp về 0');
+      });
+
+      document.getElementById('btnOpenDailyReport').addEventListener('click', openDailyReportModal);
+
+      document.getElementById('btnAddTxColumn').addEventListener('click', addTxColumnToCurrentClass);
+      document.getElementById('btnToggle3TxColumns').addEventListener('click', toggleThreeTxColumns);
+
+      document.querySelectorAll('.view-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.viewMode = btn.getAttribute('data-view');
+          saveState();
+          renderViewTabs();
+          renderTable();
+        });
+      });
+
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          activeFilterChip = chip.getAttribute('data-filter-chip');
+          renderViewTabs();
+          renderTable();
+        });
+      });
+
+      document.querySelectorAll('.scale-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.uiScale = btn.getAttribute('data-scale');
+          saveState();
+          renderViewTabs();
+        });
+      });
+
+      document.getElementById('searchStudentInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderTable();
+      });
+
+      document.querySelectorAll('[data-close-modal]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-close-modal');
+          document.getElementById(targetId).classList.add('hidden');
+        });
+      });
+
+      document.getElementById('btnConfirmYes').addEventListener('click', () => {
+        document.getElementById('modalConfirm').classList.add('hidden');
+        if (typeof pendingConfirmCallback === 'function') {
+          pendingConfirmCallback();
+          pendingConfirmCallback = null;
+        }
+      });
+
+      document.getElementById('btnOpenAddDate').addEventListener('click', openAddDateModal);
+
+      document.getElementById('formAddDate').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cls = getActiveClass();
+        if (!cls) return;
+
+        pushUndoSnapshot('Thêm ngày điểm danh');
+        const dateVal = document.getElementById('inputDateValue').value;
+        const labelVal = document.getElementById('inputDateLabel').value.trim();
+        const defaultStatus = document.getElementById('inputDateDefaultStatus').value;
+
+        const newDateId = 'd_' + Date.now();
+        cls.attendanceDates.push({
+          id: newDateId,
+          date: dateVal,
+          label: labelVal || `Buổi ${cls.attendanceDates.length + 1}`
+        });
+
+        if (defaultStatus) {
+          cls.students.forEach(st => {
+            if (!st.attendance) st.attendance = {};
+            st.attendance[newDateId] = defaultStatus;
+          });
+        }
+
+        document.getElementById('modalAddDate').classList.add('hidden');
+        saveState();
+        renderAll();
+        showToast(`Đã thêm ngày điểm danh ${formatFullDate(dateVal)}`);
+      });
+
+      document.getElementById('btnOpenAddClass').addEventListener('click', () => {
+        document.getElementById('inputClassEditMode').value = 'add';
+        document.getElementById('modalClassTitle').textContent = 'Thêm Lớp Học Mới (Môn Công Nghệ)';
+        document.getElementById('inputClassName').value = '';
+        document.getElementById('modalAddClass').classList.remove('hidden');
+      });
+
+      document.getElementById('btnRenameClass').addEventListener('click', () => {
+        const cls = getActiveClass();
+        if (!cls) return;
+        document.getElementById('inputClassEditMode').value = 'edit';
+        document.getElementById('modalClassTitle').textContent = 'Đổi Tên Lớp Học';
+        document.getElementById('inputClassName').value = cls.name;
+        document.getElementById('modalAddClass').classList.remove('hidden');
+      });
+
+      document.getElementById('formAddClass').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mode = document.getElementById('inputClassEditMode').value;
+        const name = document.getElementById('inputClassName').value.trim();
+        if (!name) return;
+
+        pushUndoSnapshot(mode === 'edit' ? 'Đổi tên lớp' : 'Thêm lớp mới');
+        if (mode === 'edit') {
+          const cls = getActiveClass();
+          if (cls) cls.name = name;
+          showToast('Đã đổi tên lớp');
+        } else {
+          const newId = 'c_' + Date.now();
+          state.classes.push({
+            id: newId,
+            name,
+            txColumns: createCompactTxColumns(),
+            attendanceDates: [
+              { id: 'd_' + Date.now(), date: new Date().toISOString().slice(0, 10), label: 'Tiết 1' }
+            ],
+            students: []
+          });
+          state.activeClassId = newId;
+          showToast(`Đã tạo ${name}`);
+        }
+
+        document.getElementById('modalAddClass').classList.add('hidden');
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('btnDeleteClass').addEventListener('click', () => {
+        if (state.classes.length <= 1) {
+          showToast('Cần giữ lại ít nhất 1 lớp học');
+          return;
+        }
+        const cls = getActiveClass();
+        openConfirmModal(
+          'Xóa lớp học?',
+          `Lớp "${cls.name}" sẽ được lưu vào Thùng rác để bạn có thể khôi phục lại nếu bấm nhầm.`,
+          () => {
+            pushUndoSnapshot(`Xóa lớp ${cls.name}`);
+            saveAutomaticSnapshot(`Trước khi xóa ${cls.name}`);
+            state.trashBin.unshift({
+              trashId: 'tr_cls_' + Date.now(),
+              type: 'class',
+              classId: cls.id,
+              className: cls.name,
+              deletedAt: new Date().toLocaleString('vi-VN'),
+              payload: JSON.parse(JSON.stringify(cls))
+            });
+            state.classes = state.classes.filter(c => c.id !== cls.id);
+            state.activeClassId = state.classes[0].id;
+            saveState();
+            renderAll();
+            showToast('Đã chuyển lớp vào Thùng rác (Nhấn Hoàn tác nếu nhầm)');
+          }
+        );
+      });
+
+      document.getElementById('btnOpenAddStudent').addEventListener('click', () => {
+        document.getElementById('inputStudentNames').value = '';
+        document.getElementById('modalAddStudent').classList.remove('hidden');
+      });
+
+      document.getElementById('formAddStudent').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cls = getActiveClass();
+        if (!cls) return;
+
+        const raw = document.getElementById('inputStudentNames').value;
+        const lines = raw.split('\n').map(s => s.trim()).filter(Boolean);
+        if (lines.length === 0) return;
+
+        pushUndoSnapshot(`Thêm ${lines.length} học sinh`);
+        lines.forEach((fullName, idx) => {
+          const nextNum = cls.students.length + 1;
+          const attMap = {};
+          cls.attendanceDates.forEach(d => {
+            attMap[d.id] = 'P';
+          });
+          const txMap = {};
+          cls.txColumns.forEach(c => {
+            txMap[c.id] = null;
+          });
+          cls.students.push({
+            id: 's_' + Date.now() + '_' + idx,
+            code: `HS${String(nextNum).padStart(2, '0')}`,
+            name: fullName,
+            regularScores: txMap,
+            bonusPenalty: 0,
+            midterm: null,
+            final: null,
+            attendance: attMap,
+            note: '',
+            oralCount: 0,
+            lastOralDate: ''
+          });
+        });
+
+        document.getElementById('modalAddStudent').classList.add('hidden');
+        saveState();
+        renderAll();
+        showToast(`Đã thêm ${lines.length} học sinh`);
+      });
+
+      document.getElementById('btnExportCSV').addEventListener('click', () => {
+        const cls = getActiveClass();
+        if (!cls) return;
+
+        const headers = [
+          'STT',
+          'Mã HS',
+          'Họ và Tên',
+          'Môn học',
+          'Số lần dò bài',
+          ...cls.txColumns.map((c, idx) => `Thường xuyên ${idx + 1}`),
+          'Điểm Cộng / Trừ',
+          'Điểm Giữa kỳ',
+          'Điểm Cuối kỳ',
+          'TBM',
+          ...cls.attendanceDates.map(d => `${formatFullDate(d.date)} (${d.label || ''})`),
+          'Tổng buổi vắng',
+          'Ghi chú / Lỗi vi phạm'
+        ];
+
+        const statusLabel = {
+          P: 'Có mặt',
+          A_P: 'Vắng có phép',
+          A_U: 'Vắng không phép',
+          L: 'Đi muộn'
+        };
+
+        const rows = cls.students.map((st, idx) => {
+          const avg = calcAverage(st, cls.txColumns) || '';
+          const abs = countAbsences(st, cls.attendanceDates);
+          return [
+            idx + 1,
+            st.code || `HS${idx + 1}`,
+            st.name,
+            'Công Nghệ',
+            st.oralCount || 0,
+            ...cls.txColumns.map(c => st.regularScores?.[c.id] ?? ''),
+            st.bonusPenalty ?? 0,
+            st.midterm ?? '',
+            st.final ?? '',
+            avg,
+            ...cls.attendanceDates.map(d => statusLabel[st.attendance?.[d.id]] || 'Chưa ĐD'),
+            abs.totalAbsent,
+            st.note || ''
+          ];
+        });
+
+        const csvContent = '\uFEFF' + [headers, ...rows]
+          .map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `So_Diem_Cong_Nghe_${cls.name.replace(/\s+/g, '_')}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Đã xuất file CSV thành công');
+      });
+
+      document.getElementById('btnResetDemo').addEventListener('click', () => {
+        openConfirmModal(
+          'Khôi phục dữ liệu mẫu?',
+          'Hệ thống sẽ tự động chụp lại bản sao lưu trước khi đặt lại về danh sách mẫu.',
+          () => {
+            pushUndoSnapshot('Khôi phục dữ liệu mẫu');
+            saveAutomaticSnapshot('Trước khi khôi phục mẫu');
+            state = createInitialData();
+            saveState();
+            renderAll();
+            showToast('Đã khôi phục dữ liệu mẫu (Có thể Hoàn tác)');
+          }
+        );
+      });
+    });
+  </script>
+</body>
+</html>
