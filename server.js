@@ -7,7 +7,13 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Phục vụ các file tĩnh tại thư mục gốc hiện tại
+app.use(express.static(__dirname));
+
+// Trả về file index.html khi truy cập trang chủ
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/so_quan_ly_lop_cong_nghe';
 
