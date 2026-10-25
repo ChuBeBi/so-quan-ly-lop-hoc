@@ -493,12 +493,19 @@
         <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h4 class="font-bold text-sm text-emerald-950">1. Lưu trực tiếp vào ổ cứng Máy tính (Sau mỗi tiết dạy)</h4>
-              <p class="text-emerald-800 mt-0.5">Tạo file dữ liệu gốc <code>.json</code> lưu thẳng về máy tính. Dù mất mạng hay đổi trình duyệt vẫn khôi phục lại 100% chỉ với 1 cú nhấp.</p>
+              <h4 class="font-bold text-sm text-emerald-950">1. Lưu trực tiếp vào Máy tính (Theo Ngày & Lần lưu)</h4>
+              <p class="text-emerald-800 mt-0.5">Tạo file dữ liệu gốc <code>.json</code> theo định dạng ngày và số lần lưu (tránh ghi đè nhầm làm mất dữ liệu), hoặc chọn 1 file cố định để ghi đè liên tục.</p>
+              <div class="mt-2 text-[11px] text-emerald-900 bg-white/80 border border-emerald-200 rounded-lg px-2.5 py-1.5 inline-flex items-center gap-2">
+                <span>📁 Tên file lưu lần tiếp theo hôm nay:</span>
+                <span id="textNextBackupName" class="font-bold text-emerald-950 underline">So_Cong_Nghe_Ngay_..._Lan_1.json</span>
+              </div>
             </div>
             <div class="flex flex-wrap items-center gap-2 shrink-0">
               <button type="button" id="btnDownloadJsonBackup" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs">
-                💾 Tải File Sao Lưu (.JSON)
+                💾 Tải File Lần Lưu Mới (.JSON)
+              </button>
+              <button type="button" id="btnSaveOverwriteFixedFile" title="Chọn 1 file trên máy để mỗi lần bấm sẽ ghi đè trực tiếp vào file đó" class="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold shadow-xs">
+                📝 Chọn File Ghi Đè Trực Tiếp
               </button>
               <label class="px-3.5 py-2 rounded-xl bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-900 font-bold cursor-pointer shadow-2xs">
                 📂 Mở File Từ Máy Tính
@@ -511,19 +518,19 @@
         <div class="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <h4 class="font-bold text-sm text-indigo-950">2. Đồng bộ song song với MongoDB Cloud (Chia sẻ Public cho bạn bè)</h4>
-              <p class="text-indigo-800 mt-0.5">Nhập URL Backend MongoDB API (Node.js/Express + Mongoose) để tự động đồng bộ mỗi khi bấm Lưu tiết dạy.</p>
+              <h4 class="font-bold text-sm text-indigo-950">2. Đồng bộ Tức Thì với MongoDB Cloud (Đồng bộ Real-time giữa các máy)</h4>
+              <p class="text-indigo-800 mt-0.5">Hệ thống tự động đồng bộ ngay khi 1 bên lưu điểm hoặc sửa thông tin. Bạn và đồng nghiệp không cần gửi file JSON qua lại!</p>
             </div>
-            <span id="mongoConfigStatusText" class="px-2.5 py-1 rounded-full bg-white border border-indigo-200 text-indigo-700 font-semibold">Chế độ Local + File</span>
+            <span id="mongoConfigStatusText" class="px-2.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold">🟢 Trực tuyến • Đồng bộ tức thì</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <div class="sm:col-span-2">
-              <label class="block font-semibold text-slate-700 mb-1">MongoDB API Endpoint URL (Backend Server / Atlas Webhook)</label>
-              <input id="inputMongoEndpoint" type="url" placeholder="VD: https://lop-cong-nghe-api.onrender.com/api/sync" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+              <label class="block font-semibold text-slate-700 mb-1">MongoDB API Endpoint URL</label>
+              <input id="inputMongoEndpoint" type="url" placeholder="https://so-quan-ly-lop-hoc.onrender.com/api/sync" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">Mã Sổ Giáo Viên (Room Key)</label>
-              <input id="inputMongoRoomKey" type="text" placeholder="VD: gv_cong_nghe_2026" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+              <label class="block font-semibold text-slate-700 mb-1">Mã Sổ Giáo Viên (Room Key dùng chung)</label>
+              <input id="inputMongoRoomKey" type="text" placeholder="VD: gv_cong_nghe_2026" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono font-bold text-indigo-700" />
             </div>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
@@ -533,10 +540,10 @@
             </label>
             <div class="flex items-center gap-2">
               <button type="button" id="btnPullFromMongo" class="px-3 py-1.5 rounded-xl bg-white border border-indigo-300 hover:bg-indigo-100 text-indigo-800 font-semibold">
-                ⬇️ Tải dữ liệu từ MongoDB về
+                ⬇️ Tải lại từ Cloud
               </button>
               <button type="button" id="btnSaveMongoConfig" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">
-                ☁️ Lưu cấu hình & Đồng bộ ngay
+                ☁️ Cập nhật & Đồng bộ ngay
               </button>
             </div>
           </div>
@@ -838,7 +845,9 @@
       } catch (e) {}
     }
 
-    function saveState() {
+    let autoCloudSyncTimer = null;
+
+    function saveState(triggerCloud = true) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -846,6 +855,14 @@
         if (el) el.textContent = `Đã tự động lưu lúc ${nowStr}`;
       } catch (e) {}
       updateUndoBadge();
+
+      // Tự động lưu lên Cloud sau 2.5s khi dừng gõ / sửa điểm
+      if (triggerCloud && !isApplyingRemoteUpdate) {
+        clearTimeout(autoCloudSyncTimer);
+        autoCloudSyncTimer = setTimeout(() => {
+          syncWithMongoDB(false);
+        }, 2500);
+      }
     }
 
     function updateUndoBadge() {
@@ -1943,10 +1960,68 @@
       document.getElementById('modalDailyReport').classList.remove('hidden');
     }
 
+    const CLIENT_ID = 'client_' + Math.random().toString(36).slice(2, 9);
+    let sseSource = null;
+    let isApplyingRemoteUpdate = false;
+    let fixedFileHandle = null;
+    let lastCloudUpdatedAt = null;
+
+    function getSyncEndpoint() {
+      if (state.mongoConfig?.endpoint && state.mongoConfig.endpoint.trim() !== '') {
+        return state.mongoConfig.endpoint.trim();
+      }
+      if (window.location.protocol.startsWith('http')) {
+        return window.location.origin + '/api/sync';
+      }
+      return '';
+    }
+
+    function getRoomKey() {
+      return (state.mongoConfig?.roomKey || 'gv_cong_nghe_2026').trim();
+    }
+
+    function getDailySaveCounter() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      const dateKey = `${day}-${month}-${year}`;
+      let counters = {};
+      try {
+        counters = JSON.parse(localStorage.getItem('daily_save_counters') || '{}');
+      } catch (e) {}
+      const count = (counters[dateKey] || 0) + 1;
+      counters[dateKey] = count;
+      localStorage.setItem('daily_save_counters', JSON.stringify(counters));
+      return { dateKey, count };
+    }
+
+    function peekDailySaveCounter() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      const dateKey = `${day}-${month}-${year}`;
+      let counters = {};
+      try {
+        counters = JSON.parse(localStorage.getItem('daily_save_counters') || '{}');
+      } catch (e) {}
+      const nextCount = (counters[dateKey] || 0) + 1;
+      return { dateKey, nextCount };
+    }
+
     function openDataCenterModal() {
-      document.getElementById('inputMongoEndpoint').value = state.mongoConfig?.endpoint || '';
-      document.getElementById('inputMongoRoomKey').value = state.mongoConfig?.roomKey || 'gv_cong_nghe_2026';
+      const currentEndpoint = getSyncEndpoint();
+      document.getElementById('inputMongoEndpoint').value = state.mongoConfig?.endpoint || currentEndpoint;
+      document.getElementById('inputMongoRoomKey').value = getRoomKey();
       document.getElementById('checkboxAutoDownloadPerLesson').checked = state.mongoConfig?.autoDownloadPerLesson !== false;
+
+      const { dateKey, nextCount } = peekDailySaveCounter();
+      const elNext = document.getElementById('textNextBackupName');
+      if (elNext) {
+        elNext.textContent = `So_Cong_Nghe_Ngay_${dateKey}_Lan_${nextCount}.json`;
+      }
+
       renderTrashAndSnapshots();
       document.getElementById('modalDataCenter').classList.remove('hidden');
     }
@@ -2028,9 +2103,13 @@
     }
 
     function downloadJsonFileToPC() {
-      const cls = getActiveClass();
-      const dateStr = new Date().toISOString().slice(0, 10);
-      const fileName = `So_Quan_Ly_Cong_Nghe_${cls ? cls.name.replace(/\s+/g, '_') : 'All'}_${dateStr}.json`;
+      const today = new Date();
+      const { dateKey, count } = getDailySaveCounter();
+      const hours = String(today.getHours()).padStart(2, '0');
+      const minutes = String(today.getMinutes()).padStart(2, '0');
+
+      // Tên file rõ ràng theo Ngày và Lần lưu (VD: So_Cong_Nghe_Ngay_25-10-2026_Lan_1_(21h40).json)
+      const fileName = `So_Cong_Nghe_Ngay_${dateKey}_Lan_${count}_(${hours}h${minutes}).json`;
       const payload = JSON.stringify(state, null, 2);
       const blob = new Blob([payload], { type: 'application/json;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -2043,9 +2122,48 @@
       URL.revokeObjectURL(url);
     }
 
+    async function saveOverwriteFixedFile() {
+      if (!window.showSaveFilePicker) {
+        downloadJsonFileToPC();
+        showToast('Trình duyệt không hỗ trợ chọn file ghi đè trực tiếp, đã tự động tải file mới.');
+        return;
+      }
+      try {
+        if (!fixedFileHandle) {
+          fixedFileHandle = await window.showSaveFilePicker({
+            suggestedName: 'So_Quan_Ly_Lop_Hoc_Chinh.json',
+            types: [{
+              description: 'JSON Backup File',
+              accept: { 'application/json': ['.json'] }
+            }]
+          });
+        }
+        const writable = await fixedFileHandle.createWritable();
+        await writable.write(JSON.stringify(state, null, 2));
+        await writable.close();
+        showToast('✅ Đã ghi đè thành công vào file cố định trên máy!');
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          downloadJsonFileToPC();
+        }
+      }
+    }
+
+    function updateSyncBadge(isOnline, text) {
+      const badge = document.getElementById('syncStatusBadge');
+      if (!badge) return;
+      if (isOnline) {
+        badge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-2xs shrink-0';
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ${escapeHtml(text || '🟢 Đã kết nối Cloud • Đồng bộ tức thì')}`;
+      } else {
+        badge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-300 shrink-0';
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> ${escapeHtml(text || '🟡 Đang lưu máy tính (Ngoại tuyến)')}`;
+      }
+    }
+
     async function syncWithMongoDB(showNotification = true) {
-      const endpoint = (state.mongoConfig?.endpoint || '').trim();
-      const roomKey = (state.mongoConfig?.roomKey || 'gv_cong_nghe_2026').trim();
+      const endpoint = getSyncEndpoint();
+      const roomKey = getRoomKey();
       const badge = document.getElementById('syncStatusBadge');
 
       if (!endpoint) {
@@ -2062,21 +2180,120 @@
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ roomKey, updatedAt: new Date().toISOString(), state })
+          body: JSON.stringify({
+            roomKey,
+            sourceId: CLIENT_ID,
+            updatedAt: new Date().toISOString(),
+            state
+          })
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        if (badge) {
-          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Đã lưu Máy tính + MongoDB Cloud`;
+        const data = await res.json();
+        if (data && data.updatedAt) {
+          lastCloudUpdatedAt = data.updatedAt;
         }
+        updateSyncBadge(true, '🟢 Đã lưu Máy tính + MongoDB Cloud');
         if (showNotification) showToast('Đã lưu song song vào Máy tính & MongoDB Cloud!');
         return true;
       } catch (err) {
-        if (badge) {
-          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Đã lưu Máy tính (Chờ kết nối MongoDB)`;
-        }
+        updateSyncBadge(false, '🟡 Đã lưu Máy tính (MongoDB API đang ngoại tuyến)');
         if (showNotification) showToast('Đã lưu an toàn vào Máy tính (MongoDB API đang ngoại tuyến)');
         return false;
       }
+    }
+
+    function initRealtimeSync() {
+      const endpoint = getSyncEndpoint();
+      if (!endpoint || !endpoint.startsWith('http')) return;
+      const roomKey = getRoomKey();
+      const streamUrl = endpoint.replace(/\/api\/sync\/?$/, '') + '/api/sync/stream?roomKey=' + encodeURIComponent(roomKey);
+
+      if (sseSource) {
+        try { sseSource.close(); } catch(e) {}
+      }
+
+      try {
+        sseSource = new EventSource(streamUrl);
+        sseSource.onopen = () => {
+          updateSyncBadge(true, '🟢 Trực tuyến • Đồng bộ tức thì');
+        };
+        sseSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'SYNC_UPDATE') {
+              // Bỏ qua nếu tin nhắn gửi từ chính tab hiện tại
+              if (data.sourceId === CLIENT_ID) return;
+
+              if (data.state) {
+                isApplyingRemoteUpdate = true;
+                pushUndoSnapshot('Đồng bộ tự động từ máy khác');
+                state = normalizeState(data.state);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                lastCloudUpdatedAt = data.updatedAt;
+                renderAll();
+                isApplyingRemoteUpdate = false;
+
+                const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                updateSyncBadge(true, `⚡ Vừa cập nhật từ máy khác (${timeStr})`);
+                showToast('🔔 Bạn vừa nhận bản cập nhật mới nhất từ đồng nghiệp!');
+              }
+            }
+          } catch(err) {
+            console.error('SSE JSON error', err);
+          }
+        };
+        sseSource.onerror = () => {
+          updateSyncBadge(false, '🟡 Đang kết nối lại Cloud...');
+        };
+      } catch (err) {
+        console.warn('SSE Error', err);
+      }
+    }
+
+    async function fetchLatestFromCloud(silent = false) {
+      const endpoint = getSyncEndpoint();
+      if (!endpoint) return false;
+      const roomKey = getRoomKey();
+      try {
+        const res = await fetch(`${endpoint}?roomKey=${encodeURIComponent(roomKey)}`);
+        if (!res.ok) return false;
+        const data = await res.json();
+        if (data && data.state) {
+          isApplyingRemoteUpdate = true;
+          state = normalizeState(data.state);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          lastCloudUpdatedAt = data.updatedAt;
+          renderAll();
+          isApplyingRemoteUpdate = false;
+          updateSyncBadge(true, '🟢 Đã đồng bộ với MongoDB Cloud');
+          if (!silent) showToast('Đã tải dữ liệu mới nhất từ MongoDB Cloud!');
+          return true;
+        }
+      } catch(e) {
+        if (!silent) showToast('Chưa thể kết nối tới Cloud');
+      }
+      return false;
+    }
+
+    async function checkCloudUpdatePeriodically() {
+      const endpoint = getSyncEndpoint();
+      if (!endpoint || !endpoint.startsWith('http')) return;
+      const roomKey = getRoomKey();
+      const statusUrl = endpoint.replace(/\/api\/sync\/?$/, '') + '/api/sync/status?roomKey=' + encodeURIComponent(roomKey);
+      try {
+        const res = await fetch(statusUrl);
+        if (!res.ok) return;
+        const info = await res.json();
+        if (info && info.updatedAt) {
+          if (!lastCloudUpdatedAt) {
+            lastCloudUpdatedAt = info.updatedAt;
+          } else if (new Date(info.updatedAt).getTime() > new Date(lastCloudUpdatedAt).getTime() + 1000) {
+            lastCloudUpdatedAt = info.updatedAt;
+            await fetchLatestFromCloud(true);
+            showToast('🔔 Tự động đồng bộ bản cập nhật mới từ đồng nghiệp!');
+          }
+        }
+      } catch(e) {}
     }
 
     function openAddDateModal() {
@@ -2111,8 +2328,23 @@
       updateUndoBadge();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       renderAll();
+
+      // 1. Tự động tải bản mới nhất từ Cloud ngay khi mở trang (nếu đã có trên MongoDB)
+      await fetchLatestFromCloud(true);
+
+      // 2. Kích hoạt kết nối Live Stream SSE để nhận thay đổi tức thì từ máy khác
+      initRealtimeSync();
+
+      // 3. Fallback: Kiểm tra định kỳ mỗi 8s và khi chuyển tab lại màn hình
+      setInterval(() => {
+        checkCloudUpdatePeriodically();
+      }, 8000);
+
+      window.addEventListener('focus', () => {
+        checkCloudUpdatePeriodically();
+      });
 
       document.addEventListener('click', (e) => {
         const pop = document.getElementById('noteDropdownPopover');
@@ -2161,7 +2393,7 @@
 
       document.getElementById('btnSaveLessonDual').addEventListener('click', async () => {
         saveAutomaticSnapshot('Lưu tiết dạy');
-        saveState();
+        saveState(false);
         if (state.mongoConfig?.autoDownloadPerLesson !== false) {
           downloadJsonFileToPC();
         }
@@ -2172,8 +2404,15 @@
 
       document.getElementById('btnDownloadJsonBackup').addEventListener('click', () => {
         downloadJsonFileToPC();
-        showToast('Đã tải file sao lưu .JSON về máy tính');
+        showToast('Đã tải file sao lưu .JSON theo số lần lưu');
       });
+
+      const btnOverwrite = document.getElementById('btnSaveOverwriteFixedFile');
+      if (btnOverwrite) {
+        btnOverwrite.addEventListener('click', () => {
+          saveOverwriteFixedFile();
+        });
+      }
 
       document.getElementById('inputRestoreJsonFile').addEventListener('change', (e) => {
         const file = e.target.files?.[0];
@@ -2201,32 +2440,13 @@
           roomKey: document.getElementById('inputMongoRoomKey').value.trim() || 'gv_cong_nghe_2026',
           autoDownloadPerLesson: document.getElementById('checkboxAutoDownloadPerLesson').checked
         };
-        saveState();
+        saveState(false);
+        initRealtimeSync();
         await syncWithMongoDB(true);
       });
 
       document.getElementById('btnPullFromMongo').addEventListener('click', async () => {
-        const endpoint = document.getElementById('inputMongoEndpoint').value.trim();
-        const roomKey = document.getElementById('inputMongoRoomKey').value.trim() || 'gv_cong_nghe_2026';
-        if (!endpoint) {
-          showToast('Vui lòng nhập MongoDB API Endpoint URL trước');
-          return;
-        }
-        try {
-          const url = `${endpoint}?roomKey=${encodeURIComponent(roomKey)}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          const data = await res.json();
-          if (data && data.state) {
-            pushUndoSnapshot('Tải dữ liệu từ MongoDB');
-            state = normalizeState(data.state);
-            saveState();
-            renderAll();
-            showToast('Đã đồng bộ dữ liệu mới nhất từ MongoDB về máy!');
-          }
-        } catch (err) {
-          showToast('Không thể kết nối tới MongoDB API Endpoint');
-        }
+        await fetchLatestFromCloud(false);
       });
 
       document.getElementById('btnLockScreen').addEventListener('click', () => {
