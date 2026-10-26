@@ -419,7 +419,7 @@
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Ghi điểm vào cột</label>
               <select id="selectOralTargetCol" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
                 <option value="tx_auto">Cột Thường xuyên trống tiếp theo</option>
-                <option value="bonus">+0.5 vào Điểm Cộng/Trừ</option>
+                <option value="bonus">+0.25 vào Điểm Cộng/Trừ</option>
                 <option value="count_only">Chỉ tính lượt dò bài (Không ghi điểm)</option>
               </select>
             </div>
@@ -1353,18 +1353,18 @@
             rowHtml += `
               <td class="px-1 py-1.5 text-center border-r border-slate-100 bg-violet-50/10">
                 <div class="inline-flex items-center bg-white border border-slate-200 rounded-lg p-0.5 shadow-2xs">
-                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="-0.5" title="Trừ 0.5 điểm"
+                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="-0.25" title="Trừ 0.25 điểm"
                     class="w-5 h-6 rounded-md hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center transition">
                     −
                   </button>
-                  <input type="number" step="0.5" min="-10" max="10"
+                  <input type="number" step="0.25" min="-10" max="10"
                     data-bp-input="${st.id}"
                     value="${bp}"
                     title="${bpFormatted} điểm"
-                    class="w-9 text-center font-bold text-xs py-0.5 rounded focus:outline-none ${
+                    class="w-11 text-center font-bold text-xs py-0.5 rounded focus:outline-none ${
                       bp > 0 ? 'text-emerald-700 bg-emerald-50' : bp < 0 ? 'text-rose-700 bg-rose-50' : 'text-slate-500'
                     }" />
-                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="0.5" title="Cộng 0.5 điểm"
+                  <button type="button" data-bp-adjust="${st.id}" data-bp-delta="0.25" title="Cộng 0.25 điểm"
                     class="w-5 h-6 rounded-md hover:bg-emerald-100 text-emerald-600 font-bold text-xs flex items-center justify-center transition">
                     +
                   </button>
@@ -1674,11 +1674,11 @@
 
           pushUndoSnapshot('Cộng/Trừ điểm');
           const current = Number(st.bonusPenalty || 0);
-          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round((current + delta) * 10) / 10));
+          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round((current + delta) * 100) / 100));
           saveState();
           renderStatsAndHeader();
           renderTable();
-          showToast(delta > 0 ? 'Đã cộng 0.5 điểm' : 'Đã trừ 0.5 điểm');
+          showToast(delta > 0 ? `Đã cộng ${Math.abs(delta)} điểm` : `Đã trừ ${Math.abs(delta)} điểm`);
         });
       });
 
@@ -1692,7 +1692,7 @@
           const raw = e.target.value.trim();
           let num = raw === '' ? 0 : parseFloat(raw);
           if (isNaN(num)) num = 0;
-          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round(num * 10) / 10));
+          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round(num * 100) / 100));
 
           saveState();
           renderStatsAndHeader();
@@ -2533,10 +2533,10 @@
             const targetId = emptyCol ? emptyCol.id : cls.txColumns[0].id;
             st.regularScores[targetId] = scoreNum;
           } else if (targetCol === 'bonus') {
-            st.bonusPenalty = Math.max(-10, Math.min(10, Number(st.bonusPenalty || 0) + 0.5));
+            st.bonusPenalty = Math.max(-10, Math.min(10, Math.round((Number(st.bonusPenalty || 0) + 0.25) * 100) / 100));
           }
         } else if (targetCol === 'bonus') {
-          st.bonusPenalty = Math.max(-10, Math.min(10, Number(st.bonusPenalty || 0) + 0.5));
+          st.bonusPenalty = Math.max(-10, Math.min(10, Math.round((Number(st.bonusPenalty || 0) + 0.25) * 100) / 100));
         }
 
         if (quickNote) {
