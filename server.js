@@ -41,8 +41,18 @@ const ClassroomStateSchema = new mongoose.Schema({
 
 const ClassroomState = mongoose.model('ClassroomState', ClassroomStateSchema);
 
-// Map lưu trữ các kết nối Server-Sent Events (SSE) theo roomKey để đồng bộ tức thì
-// roomKey -> Set of response objects
+// Chỉ giữ lại dữ liệu thuần (classes, noteTemplates, trashBin), loại bỏ mọi biến trạng thái thao tác màn hình (activeClassId, viewMode, uiScale, lockPin)
+function sanitizePureDataState(rawState) {
+  if (!rawState || typeof rawState !== 'object') return rawState;
+  const clean = {
+    classes: Array.isArray(rawState.classes) ? rawState.classes : [],
+    noteTemplates: Array.isArray(rawState.noteTemplates) ? rawState.noteTemplates : [],
+    trashBin: Array.isArray(rawState.trashBin) ? rawState.trashBin : []
+  };
+  return clean;
+}
+
+// Map lưu trữ các kết nối Server-Sent Events (SSE) theo roomKey để đồng bộ dữ liệu
 const sseClientsByRoom = new Map();
 
 function broadcastToRoom(roomKey, data) {
@@ -58,14 +68,14 @@ function broadcastToRoom(roomKey, data) {
   }
 }
 
-// GET /api/sync/stream?roomKey=gv_cong_nghe_2026 (Real-time Live Sync qua SSE)
+// GET /api/sync/stream?roomKey=gv_cong_nghe_2026 (Chỉ đồng bộ dữ liệu giữa nhiều người dùng, không đồng bộ thao tác UI)
 app.get('/api/sync/stream', (req, res) => {
   const roomKey = req.query.roomKey || 'gv_cong_nghe_2026';
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // Tắt buffering trên Nginx/Render proxy
+  res.setHeader('X-Accel-Buffering', 'no');
   if (res.flushHeaders) res.flushHeaders();
 
   if (!sseClientsByRoom.has(roomKey)) {
@@ -74,10 +84,8 @@ app.get('/api/sync/stream', (req, res) => {
   const clients = sseClientsByRoom.get(roomKey);
   clients.add(res);
 
-  // Gửi thông báo kết nối thành công
   res.write(`data: ${JSON.stringify({ type: 'CONNECTED', roomKey, time: new Date().toISOString() })}\n\n`);
 
-  // Heartbeat mỗi 20 giây để giữ kết nối không bị Render ngắt
   const heartbeatTimer = setInterval(() => {
     try {
       res.write(': heartbeat\n\n');
@@ -95,7 +103,7 @@ app.get('/api/sync/stream', (req, res) => {
   });
 });
 
-// GET /api/sync/status?roomKey=gv_cong_nghe_2026 (Kiểm tra mốc thời gian cập nhật nhanh)
+// GET /api/sync/status?roomKey=gv_cong_nghe_2026
 app.get('/api/sync/status', async (req, res) => {
   try {
     const roomKey = req.query.roomKey || 'gv_cong_nghe_2026';
@@ -109,7 +117,7 @@ app.get('/api/sync/status', async (req, res) => {
   }
 });
 
-// GET /api/sync?roomKey=gv_cong_nghe_2026 (Lấy toàn bộ dữ liệu mới nhất)
+// GET /api/sync?roomKey=gv_cong_nghe_2026
 app.get('/api/sync', async (req, res) => {
   try {
     const roomKey = req.query.roomKey || 'gv_cong_nghe_2026';
@@ -120,14 +128,14 @@ app.get('/api/sync', async (req, res) => {
     return res.json({
       roomKey: doc.roomKey,
       updatedAt: doc.updatedAt,
-      state: doc.state
+      state: sanitizePureDataState(doc.state)
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/sync/backups?roomKey=gv_cong_nghe_2026 (Danh sách các bản sao lưu trên Cloud)
+// GET /api/sync/backups?roomKey=gv_cong_nghe_2026
 app.get('/api/sync/backups', async (req, res) => {
   try {
     const roomKey = req.query.roomKey || 'gv_cong_nghe_2026';
@@ -145,7 +153,7 @@ app.get('/api/sync/backups', async (req, res) => {
   }
 });
 
-// POST /api/sync (Lưu dữ liệu và phát tín hiệu Real-time tới các máy khác ngay lập tức)
+// POST /api/sync (Chỉ lưu và phát dữ liệu điểm/điểm danh thuần túy, không phát thao tác chuyển màn hình)
 app.post('/api/sync', async (req, res) => {
   try {
     const { roomKey, state, sourceId } = req.body;
@@ -153,6 +161,7 @@ app.post('/api/sync', async (req, res) => {
       return res.status(400).json({ error: 'Thiếu roomKey hoặc state' });
     }
 
+    const pureDataState = sanitizePureDataState(state);
     const updatedAt = new Date();
     const existing = await ClassroomState.findOne({ roomKey });
     if (existing) {
@@ -160,25 +169,24 @@ app.post('/api/sync', async (req, res) => {
       if (existing.backups.length > 30) {
         existing.backups.length = 30;
       }
-      existing.state = state;
+      existing.state = pureDataState;
       existing.updatedAt = updatedAt;
       await existing.save();
     } else {
       await ClassroomState.create({
         roomKey,
         updatedAt,
-        state,
-        backups: [{ savedAt: new Date(), state }]
+        state: pureDataState,
+        backups: [{ savedAt: new Date(), state: pureDataState }]
       });
     }
 
-    // Phát tín hiệu Real-time lập tức tới tất cả các máy khác đang mở
     broadcastToRoom(roomKey, {
       type: 'SYNC_UPDATE',
       roomKey,
       updatedAt: updatedAt.toISOString(),
       sourceId: sourceId || null,
-      state
+      state: pureDataState
     });
 
     return res.json({ ok: true, roomKey, updatedAt: updatedAt.toISOString() });
